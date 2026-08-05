@@ -636,15 +636,744 @@
     .btn-add-pkg.added::before {
       content: "✓";
     }
+
+    /* ================= 菜单写真风格重排 =================
+       只调整视觉层与响应式布局，保留原有 DOM id 和交互事件。 */
+    :root {
+      --primary: #8f2025;
+      --primary-dark: #64151a;
+      --bg: #3c3c3b;
+      --card: #f7efdf;
+      --text: #443a35;
+      --muted: #88766b;
+      --border: #d7c3a9;
+      --paper-line: rgba(126, 89, 61, 0.15);
+      --success: #52734e;
+      --cart-height: 78px;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.09), transparent 30%),
+        radial-gradient(circle at 85% 70%, rgba(0,0,0,.12), transparent 36%),
+        var(--bg);
+      color: var(--text);
+      padding-bottom: calc(var(--cart-height) + var(--safe-bottom) + 20px);
+    }
+
+    .header,
+    .menu-shell {
+      width: min(1240px, 100%);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .header {
+      position: relative;
+      margin-top: 28px;
+      padding: 18px 28px 16px;
+      background: #9f2428;
+      border-radius: 3px 3px 0 0;
+      border-bottom: 10px solid #73191e;
+      box-shadow: 0 12px 22px rgba(0,0,0,.18);
+      overflow: hidden;
+    }
+
+    .header::before,
+    .header::after {
+      content: "";
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      height: 1px;
+      background: rgba(255, 240, 216, .75);
+      pointer-events: none;
+    }
+
+    .header::before { top: 8px; }
+    .header::after { bottom: 4px; }
+
+    .header h1 {
+      color: #fff9ef;
+      text-align: center;
+      font-family: "STKaiti", "KaiTi", "FZKai-Z03", serif;
+      font-size: clamp(30px, 5vw, 54px);
+      font-weight: 700;
+      letter-spacing: .32em;
+      line-height: 1.12;
+      text-shadow: 0 2px 0 rgba(76, 13, 17, .25);
+    }
+
+    .header .sub {
+      margin-top: 7px;
+      color: #f7ddc4;
+      text-align: center;
+      font-size: 12px;
+      letter-spacing: .18em;
+      opacity: .95;
+    }
+
+    .menu-head-meta {
+      display: flex;
+      justify-content: flex-end;
+      gap: 18px;
+      margin-top: 9px;
+      color: #f9e8d5;
+      font-size: 11px;
+      letter-spacing: .08em;
+      opacity: .9;
+    }
+
+    .menu-shell {
+      position: relative;
+      padding: 0 30px 48px;
+      background:
+        linear-gradient(90deg, transparent 0 14%, rgba(130, 94, 65, .025) 14% 14.5%, transparent 14.5% 100%),
+        repeating-linear-gradient(0deg, rgba(124, 89, 58, .025) 0 1px, transparent 1px 5px),
+        #f4ead8;
+      box-shadow: 0 18px 28px rgba(0,0,0,.2);
+    }
+
+    .menu-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-left: 1px solid rgba(111, 70, 40, .18);
+      border-right: 1px solid rgba(111, 70, 40, .18);
+      pointer-events: none;
+    }
+
+    .budget-bar {
+      margin: 0;
+      padding: 16px 0 14px;
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid var(--paper-line);
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .recommend-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 16px 0 12px;
+      padding: 12px 14px;
+      border: 1px solid #cdb79b;
+      border-left: 4px solid var(--primary);
+      border-radius: 2px;
+      background: rgba(255, 251, 242, .72);
+      box-shadow: 0 2px 0 rgba(116, 72, 37, .06);
+    }
+
+    .recommend-copy {
+      min-width: 0;
+    }
+
+    .recommend-title {
+      color: var(--primary);
+      font-family: "STKaiti", "KaiTi", serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+
+    .recommend-hint {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .btn-recommend {
+      flex: 0 0 auto;
+      min-width: 144px;
+      padding: 11px 16px;
+      border: 0;
+      border-radius: 2px;
+      background: var(--primary);
+      color: #fff8ed;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-recommend:active { background: var(--primary-dark); }
+    .btn-recommend.done { background: var(--success); }
+
+    .people-control label,
+    .budget-info .label,
+    .budget-info .hint {
+      color: var(--muted);
+    }
+
+    .people-control button {
+      width: 30px;
+      height: 30px;
+      border-radius: 2px;
+      border: 1px solid #a9907c;
+      background: rgba(255,255,255,.2);
+      color: var(--primary);
+      font-size: 17px;
+    }
+
+    .people-control .num {
+      color: var(--primary);
+      font-family: Georgia, serif;
+      font-size: 20px;
+    }
+
+    .budget-info .amount {
+      color: var(--primary);
+      font-family: Georgia, serif;
+    }
+
+    .package-section {
+      margin: 18px 0 12px;
+    }
+
+    .package-title,
+    .section-title {
+      position: relative;
+      border: 0;
+      padding: 7px 18px;
+      color: #fff8ed;
+      background: var(--primary);
+      box-shadow: inset 0 0 0 2px rgba(255,239,210,.66), inset 0 0 0 5px var(--primary);
+      font-family: "STKaiti", "KaiTi", serif;
+      letter-spacing: .1em;
+      text-align: center;
+    }
+
+    .package-title {
+      width: fit-content;
+      margin: 0 auto 14px;
+      font-size: 19px;
+    }
+
+    .package-title::before,
+    .package-title::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: clamp(38px, 12vw, 170px);
+      height: 1px;
+      background: rgba(143,32,37,.45);
+    }
+
+    .package-title::before { right: 100%; margin-right: 14px; }
+    .package-title::after { left: 100%; margin-left: 14px; }
+
+    .package-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .package-card {
+      border-radius: 2px;
+      border: 1px solid #cdb79b;
+      background: rgba(255,251,242,.62);
+      box-shadow: 0 2px 0 rgba(116, 72, 37, .08);
+    }
+
+    .package-card .pkg-top {
+      padding: 10px 12px 0;
+    }
+
+    .package-card .pkg-price-badge {
+      border-radius: 2px;
+      background: var(--primary);
+      box-shadow: none;
+    }
+
+    .package-card .pkg-body {
+      padding: 8px 12px 12px;
+    }
+
+    .package-card .pkg-name {
+      font-family: "STKaiti", "KaiTi", serif;
+      color: var(--primary);
+    }
+
+    .package-card .dish-chip {
+      border-radius: 2px;
+      background: rgba(228, 209, 184, .35);
+      border-color: #d8c4aa;
+    }
+
+    .btn-add-pkg,
+    .btn-copy {
+      border-radius: 2px;
+      background: var(--primary);
+    }
+
+    .tabs {
+      position: sticky;
+      top: 0;
+      margin: 14px -30px 0;
+      padding: 12px 30px 10px;
+      background: rgba(244,234,216,.95);
+      border-top: 1px solid var(--paper-line);
+      border-bottom: 1px solid var(--paper-line);
+      gap: 10px;
+    }
+
+    .tab {
+      min-height: 32px;
+      padding: 6px 13px;
+      border-radius: 2px;
+      border: 1px solid #b89a80;
+      background: transparent;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .tab.active {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #fff7e9;
+    }
+
+    .note {
+      margin: 12px 0 20px;
+      padding: 9px 12px;
+      border-radius: 2px;
+      border: 1px solid #d8b57e;
+      border-left: 4px solid var(--primary);
+      background: rgba(255,248,226,.7);
+      color: #765c48;
+    }
+
+    #menuContainer {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px 24px;
+      align-items: start;
+    }
+
+    .section {
+      margin: 0;
+      padding: 0 12px 10px;
+      border-bottom: 1px solid var(--paper-line);
+    }
+
+    .section-title {
+      width: fit-content;
+      min-width: 142px;
+      margin: 0 auto 7px;
+      font-size: 19px;
+      line-height: 1.2;
+    }
+
+    .dish-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 14px;
+    }
+
+    .dish {
+      min-width: 0;
+      min-height: 52px;
+      padding: 7px 0 6px;
+      gap: 6px;
+      border: 0;
+      border-bottom: 1px dashed rgba(124, 89, 58, .27);
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .dish-name {
+      overflow: hidden;
+      color: #51443d;
+      font-size: 13px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .dish-price {
+      margin-top: 1px;
+      color: #7d6250;
+      font-family: Georgia, serif;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .dish-price span {
+      color: var(--muted);
+      font-family: inherit;
+    }
+
+    .qty-control {
+      gap: 3px;
+      padding-top: 2px;
+    }
+
+    .qty-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 2px;
+      border: 1px solid #b79b84;
+      background: transparent;
+      color: var(--primary);
+      font-size: 14px;
+    }
+
+    .qty-btn.plus {
+      border-color: var(--primary);
+      background: transparent;
+      color: var(--primary);
+    }
+
+    .qty {
+      min-width: 16px;
+      color: var(--primary);
+      font-family: Georgia, serif;
+      font-size: 12px;
+    }
+
+    .cart-bar {
+      left: 50%;
+      right: auto;
+      width: min(1240px, 100%);
+      transform: translateX(-50%);
+      border: 0;
+      border-top: 3px solid #d5ac7f;
+      border-radius: 8px 8px 0 0;
+      background: #791a20;
+      box-shadow: 0 -6px 24px rgba(0,0,0,.22);
+    }
+
+    .cart-summary .total-price,
+    .cart-summary .count {
+      color: #fff7e7;
+    }
+
+    .cart-summary .diff.over {
+      background: #f9ddd0;
+      color: var(--primary);
+    }
+
+    .cart-summary .diff.under {
+      background: #dcebd5;
+      color: #3f6339;
+    }
+
+    .btn-order {
+      border-radius: 2px;
+      background: #f2d0a9;
+      color: #74191e;
+      box-shadow: inset 0 0 0 1px rgba(116,25,30,.22);
+    }
+
+    .btn-order:active { background: #e7b985; }
+    .btn-order:disabled { background: #b69a84; color: #eee1d4; }
+
+    .modal {
+      border: 1px solid #cdb79b;
+      border-bottom: 0;
+      border-radius: 5px 5px 0 0;
+      background: #f7efdf;
+    }
+
+    .modal-header h3,
+    .order-total { color: var(--primary); }
+
+    .copy-area {
+      border-radius: 2px;
+      background: rgba(255,255,255,.45);
+    }
+
+    .order-item {
+      align-items: center;
+      gap: 10px;
+    }
+
+    .order-item-main {
+      display: flex;
+      flex: 1;
+      min-width: 0;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .btn-remove-item {
+      flex: 0 0 auto;
+      padding: 4px 8px;
+      border: 1px solid #c38b7b;
+      border-radius: 2px;
+      background: transparent;
+      color: var(--primary);
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .btn-remove-item:active {
+      background: #f5ddd4;
+    }
+
+    @media (max-width: 700px) {
+      body { background: #f4ead8; }
+
+      .header {
+        margin-top: 0;
+        border-radius: 0;
+        box-shadow: 0 6px 15px rgba(82, 24, 19, .18);
+      }
+
+      .header h1 {
+        font-size: 29px;
+        letter-spacing: .16em;
+      }
+
+      .menu-head-meta {
+        justify-content: center;
+        gap: 10px;
+        font-size: 10px;
+      }
+
+      .menu-shell {
+        padding: 0 16px 36px;
+        box-shadow: none;
+      }
+
+      .tabs {
+        margin-left: -16px;
+        margin-right: -16px;
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .package-list,
+      #menuContainer {
+        grid-template-columns: 1fr;
+      }
+
+      .recommend-bar {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .btn-recommend { width: 100%; }
+
+      .dish-list { grid-template-columns: 1fr; }
+
+      .section { padding-left: 4px; padding-right: 4px; }
+    }
+
+    @media (min-width: 701px) and (max-width: 980px) {
+      .header { margin-top: 16px; }
+      .menu-shell { padding-left: 22px; padding-right: 22px; }
+      .tabs { margin-left: -22px; margin-right: -22px; padding-left: 22px; padding-right: 22px; }
+    }
+
+    /* ================= 手机 / 电脑浏览器适配 ================= */
+    html,
+    body {
+      overflow-x: hidden;
+    }
+
+    @media (min-width: 1100px) {
+      .header,
+      .menu-shell {
+        width: min(1440px, calc(100vw - 48px));
+      }
+
+      .header {
+        margin-top: 20px;
+        padding-left: 38px;
+        padding-right: 38px;
+      }
+
+      .menu-shell {
+        padding-left: 38px;
+        padding-right: 38px;
+        padding-bottom: 60px;
+      }
+
+      .tabs {
+        margin-left: -38px;
+        margin-right: -38px;
+        padding-left: 38px;
+        padding-right: 38px;
+      }
+
+      .section {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .dish-list {
+        gap: 0 24px;
+      }
+
+      .dish {
+        min-height: 58px;
+        padding-top: 9px;
+        padding-bottom: 8px;
+      }
+
+      .dish-name { font-size: 14px; }
+      .dish-price { font-size: 14px; }
+      .qty-btn { width: 24px; height: 24px; }
+    }
+
+    @media (min-width: 701px) and (max-width: 1099px) {
+      .header,
+      .menu-shell {
+        width: calc(100% - 24px);
+      }
+
+      .menu-shell {
+        padding-left: 24px;
+        padding-right: 24px;
+      }
+
+      .tabs {
+        margin-left: -24px;
+        margin-right: -24px;
+        padding-left: 24px;
+        padding-right: 24px;
+      }
+    }
+
+    @media (min-width: 701px) and (max-width: 900px) {
+      .dish-list { grid-template-columns: 1fr; }
+      .section-title { font-size: 17px; }
+      .dish { min-height: 48px; }
+    }
+
+    @media (max-width: 700px) {
+      .header,
+      .menu-shell {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .header {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .menu-shell {
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-bottom: calc(36px + var(--cart-height));
+      }
+
+      .budget-bar {
+        gap: 12px;
+        padding-top: 14px;
+        padding-bottom: 12px;
+      }
+
+      .people-control { gap: 8px; }
+      .people-control label { font-size: 13px; }
+      .budget-info .label { font-size: 11px; }
+      .budget-info .amount { font-size: 19px; }
+
+      .recommend-title { font-size: 17px; }
+      .recommend-hint { font-size: 11px; }
+
+      .tabs {
+        top: 0;
+        z-index: 90;
+      }
+
+      .section-title {
+        min-width: 126px;
+        font-size: 17px;
+      }
+
+      .dish {
+        min-height: 48px;
+        padding-top: 8px;
+        padding-bottom: 7px;
+      }
+
+      .dish-name { font-size: 14px; }
+      .dish-price { font-size: 13px; }
+
+      .cart-bar {
+        width: 100%;
+        border-radius: 0;
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .btn-order {
+        min-width: 112px;
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .modal {
+        max-width: 100%;
+        max-height: 86vh;
+      }
+
+      .order-item-main { gap: 6px; }
+      .btn-remove-item { padding: 5px 9px; }
+    }
+
+    /* ================= 全屏铺满与鼠标滚轮修复 ================= */
+    html {
+      height: auto;
+      min-height: 100%;
+      overflow-y: auto;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-y: auto !important;
+      overscroll-behavior-y: auto;
+      -webkit-overflow-scrolling: auto;
+    }
+
+    @media (min-width: 701px) {
+      body {
+        background: #f4ead8;
+      }
+
+      .header,
+      .menu-shell {
+        width: 100%;
+      }
+
+      .header {
+        margin-top: 0;
+        border-radius: 0;
+      }
+
+      .menu-shell {
+        min-height: calc(100vh - 150px);
+        box-shadow: none;
+      }
+
+      .cart-bar {
+        width: 100%;
+        border-radius: 0;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="header">
     <h1>滋味轩川菜馆</h1>
     <div class="sub">群点餐助手 · 10:00-10:30 点餐</div>
+    <div class="menu-head-meta">
+      <span>桌号：________</span>
+      <span>人数：______</span>
+      <span>点菜日期：____年__月__日</span>
+    </div>
   </div>
 
-  <div class="budget-bar">
+  <main class="menu-shell">
+    <div class="budget-bar">
     <div class="people-control">
       <label>人数</label>
       <button id="minusPeople">−</button>
@@ -656,28 +1385,31 @@
       <div class="amount" id="budgetAmount">¥102</div>
       <div class="hint">米饭另计 1元/人</div>
     </div>
-  </div>
+    </div>
 
-  <!-- 推荐套餐 -->
-  <div class="package-section">
-    <div class="package-title">推荐套餐（一键加入）</div>
-    <div class="package-list" id="packageList"></div>
-  </div>
+    <div class="recommend-bar" id="recommendBar">
+      <div class="recommend-copy">
+        <div class="recommend-title">按人数智能推荐</div>
+        <div class="recommend-hint" id="recommendHint">优先推荐小炒和特色里的高价菜，再用凉菜等小菜补齐餐标；不推荐汤类、花生米类、水饺及酒水</div>
+      </div>
+      <button class="btn-recommend" id="btnRecommend">一键推荐菜</button>
+    </div>
 
-  <div class="tabs" id="tabs">
+    <div class="tabs" id="tabs">
     <div class="tab active" data-cat="all">全部</div>
     <div class="tab" data-cat="liangcai">精品凉菜</div>
     <div class="tab" data-cat="xiaochao">家常小炒</div>
     <div class="tab" data-cat="tese">特色推荐</div>
     <div class="tab" data-cat="tang">汤类</div>
     <div class="tab" data-cat="jiushui">酒水</div>
-  </div>
+    </div>
 
-  <div class="note">
-    规则提醒：按人数×17元点菜，超出部分现场补齐。过时未点需自行沟通老板。点完后可一键复制点菜单发给吴老板。
-  </div>
+    <div class="note">
+    推荐规则：餐标为17元/人，优先使用小炒和特色里的高价菜，不足部分用凉菜等小菜补齐；推荐总价最多只上浮1人餐标。任何人数都不推荐汤类、花生米类、水饺、锅盔及酒水。点完后可一键复制点菜单发给吴老板。
+    </div>
 
-  <div id="menuContainer"></div>
+    <div id="menuContainer"></div>
+  </main>
 
   <!-- Bottom Cart -->
   <div class="cart-bar">
@@ -845,56 +1577,6 @@
       jiushui: "酒水饮料"
     };
 
-    // ========== 推荐套餐 ==========
-    // dishes 里的数字是 menuData 的 id
-    const packages = [
-      {
-        id: "pkg4-balance",
-        name: "4人均衡套餐",
-        desc: "一凉两热，荤素搭配，严格卡预算",
-        people: 4,
-        dishes: [11, 22, 43], // 青椒皮蛋15 + 农家小炒肉28 + 宫保鸡丁23 = 66
-        price: 66,
-        tags: ["value"]
-      },
-      {
-        id: "pkg4-xiafan",
-        name: "4人下饭套餐",
-        desc: "蒜泥黄瓜 + 小炒肉 + 鱼香肉丝，经典下饭",
-        people: 4,
-        dishes: [13, 22, 27], // 12+28+23 = 63
-        price: 63,
-        tags: ["value"]
-      },
-      {
-        id: "pkg6-balance",
-        name: "6人均衡套餐",
-        desc: "两凉四热，口味丰富，推荐首选",
-        people: 6,
-        dishes: [11, 13, 22, 43, 27, 53], // 15+12+28+23+23+18 = 119
-        price: 119,
-        tags: []
-      },
-      {
-        id: "pkg6-value",
-        name: "6人超值套餐",
-        desc: "更实惠，只轻微上浮，性价比最高",
-        people: 6,
-        dishes: [14, 12, 22, 27, 43, 57], // 10+12+28+23+23+13 = 109
-        price: 109,
-        tags: ["value"]
-      },
-      {
-        id: "pkg6-meat",
-        name: "6人多肉套餐",
-        desc: "多点肉，适合胃口大的组",
-        people: 6,
-        dishes: [11, 22, 88, 43, 53, 57], // 15+28+28+23+18+13 = 125
-        price: 125,
-        tags: ["meat"]
-      }
-    ];
-
     // ========== 状态 ==========
     let people = 6;
     let cart = {}; // id -> qty
@@ -913,43 +1595,8 @@
     const modalBudgetTip = document.getElementById("modalBudgetTip");
     const copyTextEl = document.getElementById("copyText");
     const btnCopy = document.getElementById("btnCopy");
-    const packageListEl = document.getElementById("packageList");
-
-    // ========== 渲染推荐套餐 ==========
-    function renderPackages() {
-      packageListEl.innerHTML = "";
-      packages.forEach(pkg => {
-        const dishChips = pkg.dishes.map(id => {
-          const d = menuData.find(m => m.id === id);
-          return d ? `<span class="dish-chip">${d.name}</span>` : "";
-        }).join("");
-
-        // 标签
-        let tagsHtml = `<span class="tag tag-people">${pkg.people}人</span>`;
-        if (pkg.tags.includes("value")) {
-          tagsHtml += `<span class="tag tag-value">高性价比</span>`;
-        }
-        if (pkg.tags.includes("meat")) {
-          tagsHtml += `<span class="tag tag-meat">多肉</span>`;
-        }
-
-        const card = document.createElement("div");
-        card.className = "package-card";
-        card.innerHTML = `
-          <div class="pkg-top">
-            <div class="pkg-tags">${tagsHtml}</div>
-            <div class="pkg-price-badge">¥${pkg.price}</div>
-          </div>
-          <div class="pkg-body">
-            <div class="pkg-name">${pkg.name}</div>
-            <div class="pkg-desc">${pkg.desc}</div>
-            <div class="pkg-dishes">${dishChips}</div>
-            <button class="btn-add-pkg" data-pkg="${pkg.id}">一键加入此套餐</button>
-          </div>
-        `;
-        packageListEl.appendChild(card);
-      });
-    }
+    const btnRecommend = document.getElementById("btnRecommend");
+    const recommendHintEl = document.getElementById("recommendHint");
 
     // ========== 渲染菜单 ==========
     function renderMenu(filterCat = "all") {
@@ -1028,6 +1675,129 @@
       }
     }
 
+    // ========== 按人数智能推荐 ==========
+    // 推荐只从菜品中选择，排除酒水；总价控制在餐标至餐标+1人餐标之间。
+    function buildRecommendation() {
+      const budget = people * 17;
+      const upperLimit = budget + 17;
+      const smallGroup = people <= 4;
+      const smallGroupStapleIds = new Set([30, 97, 98]);
+      const alwaysExcludedIds = new Set([10, 14, 98, 108, 109]);
+      const recommendationCats = ["liangcai", "xiaochao", "tese"];
+      const catBits = Object.fromEntries(recommendationCats.map((cat, index) => [cat, 1 << index]));
+      const dishById = Object.fromEntries(menuData.map(dish => [dish.id, dish]));
+      const candidates = menuData
+        .filter(dish => dish.cat !== "jiushui"
+          && dish.cat !== "tang"
+          && dish.price <= upperLimit
+          && !alwaysExcludedIds.has(dish.id)
+          && (!smallGroup || !smallGroupStapleIds.has(dish.id)));
+
+      // 每次点击先打乱候选顺序，再从接近最优的组合池中随机抽取。
+      for (let i = candidates.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+      }
+
+      let states = [{ sum: 0, ids: [], mask: 0, counts: {}, randomness: Math.random(), randomSlot: Math.floor(Math.random() * 4) }];
+
+      const stateScore = state => {
+        const categoryCount = Object.keys(state.counts).length;
+        const missing = Math.max(0, budget - state.sum);
+        const excess = Math.max(0, state.sum - budget);
+        const mainValue = state.ids.reduce((sum, id) => {
+          const dish = dishById[id];
+          return sum + (dish && (dish.cat === "xiaochao" || dish.cat === "tese") && dish.price >= 20 ? dish.price : 0);
+        }, 0);
+        return (state.sum >= budget ? 1000 : 0)
+          + categoryCount * 120
+          + mainValue * 5
+          - missing * 6
+          - excess * 3
+          + (state.randomness || 0) * 40;
+      };
+
+      candidates.forEach(dish => {
+        const additions = [];
+        states.forEach(state => {
+          const nextSum = state.sum + dish.price;
+          if (nextSum > upperLimit) return;
+          const maxPerCategory = Math.max(2, Math.ceil(people / 5));
+          if ((state.counts[dish.cat] || 0) >= maxPerCategory) return;
+          const counts = { ...state.counts };
+          counts[dish.cat] = (counts[dish.cat] || 0) + 1;
+          additions.push({
+            sum: nextSum,
+            ids: state.ids.concat(dish.id),
+            mask: state.mask | (catBits[dish.cat] || 0),
+            counts,
+            randomness: Math.random(),
+            randomSlot: Math.floor(Math.random() * 4)
+          });
+        });
+
+        const bestByShape = new Map();
+        states.concat(additions).forEach(state => {
+          const key = `${state.sum}|${state.mask}|${state.randomSlot}`;
+          const current = bestByShape.get(key);
+          if (!current || stateScore(state) > stateScore(current)) {
+            bestByShape.set(key, state);
+          }
+        });
+
+        states = [...bestByShape.values()]
+          .sort((a, b) => stateScore(b) - stateScore(a))
+          .slice(0, 2400);
+      });
+
+      const finalScore = state => {
+        const categoryCount = Object.keys(state.counts).length;
+        const excess = state.sum - budget;
+        const mainValue = state.ids.reduce((sum, id) => {
+          const dish = dishById[id];
+          return sum + (dish && (dish.cat === "xiaochao" || dish.cat === "tese") && dish.price >= 20 ? dish.price : 0);
+        }, 0);
+        return categoryCount * 160 + mainValue * 12 - excess * 5 + (state.randomness || 0) * 100;
+      };
+
+      const valid = states
+        .filter(state => state.sum >= budget && state.sum <= upperLimit && state.ids.length > 0)
+        .sort((a, b) => finalScore(b) - finalScore(a));
+      const fallback = states
+        .filter(state => state.ids.length > 0)
+        .sort((a, b) => Math.abs(a.sum - budget) - Math.abs(b.sum - budget))[0];
+      const randomPool = valid.slice(0, Math.min(100, valid.length));
+      const selected = randomPool.length
+        ? randomPool[Math.floor(Math.random() * randomPool.length)]
+        : fallback || { sum: 0, ids: [], counts: {} };
+
+      return {
+        total: selected.sum,
+        dishes: selected.ids.map(id => menuData.find(dish => dish.id === id)).filter(Boolean)
+      };
+    }
+
+    btnRecommend.addEventListener("click", () => {
+      const result = buildRecommendation();
+      cart = {};
+      result.dishes.forEach(dish => { cart[dish.id] = 1; });
+
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+      document.querySelector('.tab[data-cat="all"]').classList.add("active");
+      renderMenu("all");
+      updateCartUI();
+
+      const budget = people * 17;
+      const diff = result.total - budget;
+      recommendHintEl.textContent = `已推荐 ${result.dishes.length} 道菜，合计 ¥${result.total}（餐标 ¥${budget}${diff > 0 ? `，上浮 ¥${diff}` : "，刚好达标"}，优先高价菜补充小菜，已排除汤类、花生米类、水饺及酒水）`;
+      btnRecommend.textContent = "已生成推荐 ✓";
+      btnRecommend.classList.add("done");
+      setTimeout(() => {
+        btnRecommend.textContent = "一键推荐菜";
+        btnRecommend.classList.remove("done");
+      }, 1800);
+    });
+
     // ========== 事件 ==========
     document.getElementById("minusPeople").addEventListener("click", () => {
       if (people > 1) {
@@ -1070,8 +1840,8 @@
       updateCartUI();
     });
 
-    // 打开点菜单
-    btnOrder.addEventListener("click", () => {
+    // ========== 渲染点餐清单 ==========
+    function renderOrderModal() {
       let total = 0;
       let html = "";
       let textLines = [];
@@ -1082,7 +1852,10 @@
           const dish = menuData.find(d => d.id == id);
           const sub = dish.price * qty;
           total += sub;
-          html += `<div class="order-item"><span>${dish.name} ×${qty}</span><span>¥${sub}</span></div>`;
+          html += `<div class="order-item">
+            <div class="order-item-main"><span>${dish.name} ×${qty}</span><span>¥${sub}</span></div>
+            <button class="btn-remove-item" data-remove-id="${dish.id}">移除</button>
+          </div>`;
           textLines.push(`${dish.name} ×${qty}  ¥${sub}`);
         }
       });
@@ -1110,8 +1883,23 @@ ${diff > 0 ? "超出部分：¥" + diff + "（现场补齐）" : diff < 0 ? "剩
 ----------------
 请按此菜单准备，谢谢！`;
       copyTextEl.textContent = copyStr;
+    }
 
+    // 打开点菜单
+    btnOrder.addEventListener("click", () => {
+      renderOrderModal();
       modalMask.classList.add("show");
+    });
+
+    // 在点餐清单中直接移除整道菜
+    orderListEl.addEventListener("click", e => {
+      const btn = e.target.closest(".btn-remove-item");
+      if (!btn) return;
+      const id = +btn.dataset.removeId;
+      delete cart[id];
+      renderMenu(document.querySelector(".tab.active").dataset.cat);
+      updateCartUI();
+      renderOrderModal();
     });
 
     document.getElementById("modalClose").addEventListener("click", () => {
@@ -1140,40 +1928,7 @@ ${diff > 0 ? "超出部分：¥" + diff + "（现场补齐）" : diff < 0 ? "剩
       });
     });
 
-    // 一键加入推荐套餐
-    packageListEl.addEventListener("click", e => {
-      const btn = e.target.closest(".btn-add-pkg");
-      if (!btn) return;
-      const pkgId = btn.dataset.pkg;
-      const pkg = packages.find(p => p.id === pkgId);
-      if (!pkg) return;
-
-      // 清空当前购物车，加入套餐菜品
-      cart = {};
-      pkg.dishes.forEach(id => {
-        cart[id] = (cart[id] || 0) + 1;
-      });
-
-      // 同步人数（可选：自动切换到套餐推荐人数）
-      people = pkg.people;
-      peopleNumEl.textContent = people;
-      budgetAmountEl.textContent = "¥" + (people * 17);
-
-      // 刷新界面
-      renderMenu(document.querySelector(".tab.active").dataset.cat);
-      updateCartUI();
-
-      // 按钮反馈
-      btn.textContent = "已加入 ✓";
-      btn.classList.add("added");
-      setTimeout(() => {
-        btn.textContent = "一键加入此套餐";
-        btn.classList.remove("added");
-      }, 1500);
-    });
-
     // 初始化
-    renderPackages();
     renderMenu();
     updateCartUI();
   </script>
