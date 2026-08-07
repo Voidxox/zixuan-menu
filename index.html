@@ -4,1376 +4,469 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="format-detection" content="telephone=no" />
-  <title>滋味轩川菜馆 · 点餐</title>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <title>滋味轩 · 点餐</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap');
+
     :root {
-      --primary: #c0392b;
-      --primary-dark: #962d22;
-      --bg: #f7f3eb;
-      --card: #ffffff;
-      --text: #2c2c2c;
-      --muted: #888;
-      --border: #e8e0d5;
-      --success: #27ae60;
-      --warning: #e67e22;
+      /* 线上菜单写真主题色（不含字体） */
+      --bg: #f4ead8;
+      --bg-soft: #efe4d2;
+      --card: #f7efdf;
+      --paper: #fffbf2;
+      --gold: #8f2025;
+      --gold-soft: #9f2428;
+      --gold-dim: rgba(143, 32, 37, 0.12);
+      --gold-line: rgba(126, 89, 61, 0.22);
+      --text: #443a35;
+      --text-secondary: #5c4a42;
+      --muted: #88766b;
+      --success: #52734e;
+      --danger: #a85a4c;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
-      --cart-height: 72px;
+      --cart-height: 78px;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-      -webkit-touch-callout: none;
-    }
-
-    html {
-      height: 100%;
-      scroll-behavior: smooth;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html { height: 100%; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-      background: var(--bg);
+      font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+      background:
+        radial-gradient(ellipse at 15% 0%, rgba(143,32,37,0.07), transparent 42%),
+        radial-gradient(ellipse at 85% 100%, rgba(60,60,59,0.06), transparent 40%),
+        var(--bg);
       color: var(--text);
-      line-height: 1.5;
-      padding-bottom: calc(var(--cart-height) + var(--safe-bottom) + 24px);
+      line-height: 1.55;
+      padding-bottom: calc(var(--cart-height) + var(--safe-bottom) + 72px);
       min-height: 100%;
-      overscroll-behavior-y: none;
       -webkit-overflow-scrolling: touch;
     }
 
     /* Header */
     .header {
-      background: linear-gradient(135deg, #c0392b, #e74c3c);
-      color: white;
-      padding: calc(14px + var(--safe-top)) 16px 16px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 12px rgba(192, 57, 43, 0.3);
-    }
-
-    .header h1 {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: 1px;
-    }
-
-    .header .sub {
-      font-size: 12px;
-      opacity: 0.9;
-      margin-top: 4px;
-    }
-
-    /* People & Budget Bar */
-    .budget-bar {
-      background: white;
-      margin: 12px 12px 0;
-      border-radius: 12px;
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      border: 1px solid var(--border);
-    }
-
-    .people-control {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .people-control label {
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    .people-control button {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: #fafafa;
-      font-size: 20px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--primary);
-      flex-shrink: 0;
-    }
-
-    .people-control button:active {
-      background: #f0f0f0;
-    }
-
-    .people-control .num {
-      font-size: 18px;
-      font-weight: 700;
-      min-width: 28px;
+      padding: calc(20px + var(--safe-top)) 20px 18px;
       text-align: center;
+      border-bottom: 6px solid #73191e;
+      background: #9f2428;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+    }
+    .header h1 {
+      font-family: "Noto Serif SC", "STKaiti", "KaiTi", serif;
+      font-size: 26px; font-weight: 700;
+      letter-spacing: 0.4em; color: #fff9ef;
+      text-indent: 0.4em;
+    }
+    .header .sub {
+      margin-top: 6px; font-size: 11px; letter-spacing: 0.25em;
+      color: #f7ddc4; font-weight: 300;
+    }
+    .header .divider {
+      width: 48px; height: 1px; background: rgba(255, 240, 216, 0.75);
+      margin: 12px auto 0; opacity: 0.9;
     }
 
-    .budget-info {
-      text-align: right;
+    /* Budget */
+    .budget-bar {
+      margin: 16px 16px 0; padding: 14px 16px;
+      background: var(--card); border: 1px solid var(--gold-line);
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
     }
-
-    .budget-info .label {
-      font-size: 12px;
-      color: var(--muted);
+    .people-control { display: flex; align-items: center; gap: 12px; }
+    .people-control label { font-size: 12px; color: var(--muted); letter-spacing: 1px; }
+    .people-control button {
+      width: 34px; height: 34px; border-radius: 50%;
+      border: 1px solid var(--gold); background: transparent;
+      color: var(--gold); font-size: 18px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
     }
-
+    .people-control button:active { background: var(--gold-dim); }
+    .people-control .num {
+      font-family: "Noto Serif SC", serif; font-size: 20px; font-weight: 600;
+      min-width: 26px; text-align: center; color: var(--text);
+    }
+    .budget-info { text-align: right; }
+    .budget-info .label { font-size: 11px; color: var(--muted); }
     .budget-info .amount {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--primary);
+      font-family: "Noto Serif SC", serif; font-size: 20px; font-weight: 600; color: var(--gold);
+    }
+    .budget-info .hint { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+    /* Tools row */
+    .tools {
+      margin: 12px 16px 0; display: flex; flex-direction: column; gap: 10px;
+    }
+    .tool-row { display: flex; gap: 8px; }
+    .btn-tool {
+      flex: 1; padding: 11px 8px; background: transparent;
+      border: 1px solid var(--gold-line); color: var(--gold);
+      font-size: 12px; letter-spacing: 1px; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-tool:active, .btn-tool.active {
+      background: var(--gold); color: #fff9ef; border-color: var(--gold);
+    }
+    .tool-hint {
+      font-size: 11px; color: var(--muted); line-height: 1.5; min-height: 16px; font-weight: 300;
     }
 
-    .budget-info .hint {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    /* Category Tabs */
-    .tabs {
-      display: flex;
-      gap: 8px;
-      padding: 12px 12px 10px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-      background: var(--bg);
-      z-index: 90;
-    }
-
-    .tabs::-webkit-scrollbar {
+    /* Taste filters */
+    .taste-panel {
+      margin: 10px 16px 0; padding: 12px 14px;
+      background: var(--paper); border: 1px solid var(--gold-line);
       display: none;
     }
+    .taste-panel.show { display: block; }
+    .taste-title {
+      font-size: 11px; color: var(--gold); letter-spacing: 2px;
+      margin-bottom: 10px; font-family: "Noto Serif SC", serif;
+    }
+    .taste-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .taste-tag {
+      padding: 6px 12px; border: 1px solid var(--gold-line);
+      font-size: 12px; color: var(--text-secondary); cursor: pointer;
+      background: transparent; transition: all 0.15s;
+    }
+    .taste-tag.on {
+      border-color: var(--gold); color: var(--gold); background: var(--gold-dim);
+    }
 
-    .tab {
-      flex-shrink: 0;
-      padding: 9px 16px;
-      border-radius: 20px;
-      background: white;
-      border: 1px solid var(--border);
-      font-size: 13px;
-      color: var(--text);
+    /* History panel */
+    .history-panel {
+      margin: 10px 16px 0; padding: 12px 14px;
+      background: var(--paper); border: 1px solid var(--gold-line);
+      display: none; max-height: 200px; overflow-y: auto;
+    }
+    .history-panel.show { display: block; }
+    .history-item {
+      padding: 10px 0; border-bottom: 1px solid rgba(126,89,61,0.12);
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    }
+    .history-item:last-child { border-bottom: none; }
+    .history-info { flex: 1; min-width: 0; }
+    .history-info .h-title { font-size: 13px; color: var(--text); }
+    .history-info .h-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .btn-reuse {
+      padding: 6px 12px; border: 1px solid var(--gold); background: transparent;
+      color: var(--gold); font-size: 11px; cursor: pointer; letter-spacing: 1px; flex-shrink: 0;
+    }
+    .btn-reuse:active { background: var(--gold); color: #fff9ef; }
+    .history-empty { font-size: 12px; color: var(--muted); text-align: center; padding: 12px 0; }
+
+
+
+    .budget-tip {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: calc(var(--cart-height) + var(--safe-bottom) + 8px);
+      z-index: 190;
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.5;
+      border: 1px solid var(--gold-line);
+      background: rgba(247, 239, 223, 0.97);
+      backdrop-filter: blur(10px);
+      color: var(--text-secondary);
+      display: none;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 16px rgba(60, 60, 59, 0.14);
+    }
+    .budget-tip.show { display: block; }
+    .budget-tip.warn {
+      border-color: rgba(168, 90, 76, 0.35);
+      background: rgba(168, 90, 76, 0.08);
+      color: #8a453a;
+    }
+    .budget-tip.ok {
+      border-color: rgba(82, 115, 78, 0.35);
+      background: rgba(82, 115, 78, 0.08);
+      color: #3f5a3c;
+    }
+    .budget-tip .tip-action {
+      color: var(--gold);
+      text-decoration: underline;
       cursor: pointer;
-      transition: all 0.2s;
-      min-height: 36px;
-      display: flex;
-      align-items: center;
+      margin-left: 6px;
     }
 
-    .tab.active {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-    }
-
-    /* Menu Sections */
-    .section {
-      margin: 8px 12px 16px;
-    }
-
-    .section-title {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 10px;
-      padding-left: 8px;
-      border-left: 3px solid var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .dish-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .dish {
-      background: white;
-      border-radius: 10px;
-      padding: 12px 14px;
-      display: flex;
+    
+    /* Selected sticky bar */
+    .selected-bar {
+      position: sticky;
+      top: calc(72px + var(--safe-top));
+      z-index: 95;
+      display: none;
       align-items: center;
       justify-content: space-between;
-      border: 1px solid var(--border);
-      transition: box-shadow 0.2s;
+      gap: 10px;
+      margin: 0;
+      padding: 10px 16px;
+      background: rgba(247, 239, 223, 0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--gold-line);
+      box-shadow: 0 2px 10px rgba(60, 60, 59, 0.1);
+      cursor: pointer;
     }
-
-    .dish:active {
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-
-    .dish-info {
-      flex: 1;
+    .selected-bar.show { display: flex; }
+    .selected-bar .sel-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
       min-width: 0;
     }
-
-    .dish-name {
-      font-size: 15px;
-      font-weight: 600;
+    .selected-bar .sel-count {
+      font-size: 13px;
+      color: var(--text);
+      letter-spacing: 0.5px;
     }
-
-    .dish-price {
-      font-size: 14px;
-      color: var(--primary);
-      font-weight: 600;
-      margin-top: 2px;
-    }
-
-    .dish-price span {
-      font-size: 12px;
-      font-weight: 400;
+    .selected-bar .sel-names {
+      font-size: 11px;
       color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 70vw;
     }
-
-    .qty-control {
+    .selected-bar .sel-right {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       flex-shrink: 0;
     }
+    .selected-bar .sel-price {
+      font-family: "Noto Serif SC", serif;
+      font-size: 16px;
+      color: var(--gold);
+      font-weight: 600;
+    }
+    .selected-bar .sel-go {
+      font-size: 11px;
+      color: var(--gold);
+      border: 1px solid var(--gold-line);
+      padding: 4px 8px;
+      letter-spacing: 0.5px;
+    }
 
-    .qty-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
+    /* Search */
+    .search-wrap {
+      margin: 12px 16px 0;
+      position: relative;
+    }
+    .search-wrap input {
+      width: 100%;
+      padding: 11px 14px 11px 38px;
+      background: var(--card);
+      border: 1px solid var(--gold-line);
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      letter-spacing: 0.3px;
+    }
+    .search-wrap input::placeholder {
+      color: var(--muted);
+      font-weight: 300;
+    }
+    .search-wrap input:focus {
+      border-color: var(--gold);
+    }
+    .search-wrap .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 14px;
+      pointer-events: none;
+    }
+    .search-wrap .search-clear {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 22px;
+      height: 22px;
       border: none;
-      background: #f5f5f5;
-      font-size: 18px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 16px;
       cursor: pointer;
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
-      color: #555;
-      transition: all 0.15s;
-      flex-shrink: 0;
+    }
+    .search-wrap.has-value .search-clear {
+      display: flex;
     }
 
-    .qty-btn.plus {
-      background: var(--primary);
-      color: white;
+    /* Tabs */
+    .tabs {
+      display: flex; gap: 0; padding: 14px 16px 0; overflow-x: auto;
+      scrollbar-width: none; border-bottom: 1px solid var(--gold-line); margin-top: 8px;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      flex-shrink: 0; padding: 10px 14px 12px; background: transparent; border: none;
+      border-bottom: 2px solid transparent; font-size: 13px; color: var(--muted);
+      cursor: pointer; letter-spacing: 0.5px;
+    }
+    .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+    .note {
+      margin: 14px 16px 6px; font-size: 11px; color: var(--muted);
+      border-left: 2px solid var(--gold-line); padding: 8px 12px;
+      line-height: 1.6; font-weight: 300;
     }
 
-    .qty-btn:active {
-      transform: scale(0.92);
+    /* Sections */
+    .section { margin: 18px 16px 14px; }
+    .section-title {
+      font-family: "Noto Serif SC", serif; font-size: 13px; font-weight: 600;
+      color: var(--gold); letter-spacing: 3px; margin-bottom: 10px;
+      padding-bottom: 8px; border-bottom: 1px solid var(--gold-line);
+      display: flex; align-items: center; gap: 8px;
     }
-
-    .qty-btn:disabled {
-      opacity: 0.35;
-      cursor: not-allowed;
+    .section-title::before {
+      content: ""; width: 6px; height: 6px; border: 1px solid var(--gold); transform: rotate(45deg);
     }
+    .dish {
+      padding: 13px 0; display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(126,89,61,0.1);
+    }
+    .dish:last-child { border-bottom: none; }
+    .dish.hidden-by-filter { display: none; }
+    .dish-info { flex: 1; min-width: 0; padding-right: 10px; }
+    .dish-name { font-size: 14px; color: var(--text); letter-spacing: 0.3px; }
+    .dish-tags { margin-top: 3px; display: flex; gap: 4px; flex-wrap: wrap; }
+    .dish-tag {
+      font-size: 10px; padding: 1px 6px; border: 1px solid var(--gold-line);
+      color: var(--muted); letter-spacing: 0.5px;
+    }
+    .dish-tag.spicy { border-color: #a85a4c; color: #a85a4c; }
+    .dish-price {
+      font-family: "Noto Serif SC", serif; font-size: 13px; color: var(--gold); margin-top: 3px;
+    }
+    .dish-price span { font-size: 11px; color: var(--muted); font-family: "Noto Sans SC", sans-serif; }
 
+    .qty-control { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .qty-btn {
+      width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--gold-line);
+      background: transparent; font-size: 15px; color: var(--text-secondary);
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+    .qty-btn.plus { border-color: var(--gold); color: var(--gold); }
+    .qty-btn:active { background: var(--gold-dim); }
+    .qty-btn:disabled { opacity: 0.25; }
     .qty {
-      font-size: 16px;
-      font-weight: 600;
-      min-width: 22px;
-      text-align: center;
+      font-family: "Noto Serif SC", serif; font-size: 14px; font-weight: 600;
+      min-width: 18px; text-align: center; color: var(--text);
     }
 
-    /* Bottom Cart Bar */
+    /* Cart */
     .cart-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: white;
-      border-top: 1px solid var(--border);
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(247, 239, 223, 0.96); backdrop-filter: blur(14px);
+      border-top: 1px solid var(--gold-line);
       padding: 12px 16px calc(12px + var(--safe-bottom));
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      z-index: 200;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
-      min-height: calc(var(--cart-height) + var(--safe-bottom));
+      display: flex; align-items: center; gap: 12px; z-index: 200;
     }
-
-    .cart-summary {
-      flex: 1;
-    }
-
-    .cart-summary .total-line {
-      display: flex;
-      align-items: baseline;
-      gap: 6px;
-    }
-
+    .cart-summary { flex: 1; }
+    .cart-summary .total-line { display: flex; align-items: baseline; gap: 8px; }
     .cart-summary .total-price {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--primary);
+      font-family: "Noto Serif SC", serif; font-size: 22px; font-weight: 600; color: var(--gold);
     }
-
-    .cart-summary .total-price::before {
-      content: "¥";
-      font-size: 14px;
-    }
-
+    .cart-summary .total-price::before { content: "¥"; font-size: 13px; margin-right: 1px; }
     .cart-summary .diff {
-      font-size: 12px;
-      padding: 2px 6px;
-      border-radius: 4px;
+      font-size: 11px; padding: 2px 7px; border: 1px solid; letter-spacing: 0.5px;
     }
-
-    .cart-summary .diff.over {
-      background: #fdecea;
-      color: var(--primary);
-    }
-
-    .cart-summary .diff.under {
-      background: #e8f8ef;
-      color: var(--success);
-    }
-
-    .cart-summary .count {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
+    .cart-summary .diff.over { border-color: var(--danger); color: var(--danger); }
+    .cart-summary .diff.under { border-color: var(--success); color: var(--success); }
+    .cart-summary .count { font-size: 11px; color: var(--muted); margin-top: 2px; }
     .btn-order {
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 24px;
-      padding: 12px 22px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
+      background: var(--gold); color: #fff9ef; border: none;
+      padding: 12px 18px; font-size: 13px; font-weight: 500; letter-spacing: 1.5px; cursor: pointer;
     }
-
-    .btn-order:active {
-      background: var(--primary-dark);
-    }
-
-    .btn-order:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
+    .btn-order:disabled { background: #d7c3a9; color: var(--muted); cursor: not-allowed; }
 
     /* Modal */
     .modal-mask {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 300;
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
+      position: fixed; inset: 0; background: rgba(60, 60, 59, 0.5); z-index: 300;
+      display: none; align-items: flex-end; justify-content: center;
     }
-
-    .modal-mask.show {
-      display: flex;
-    }
-
+    .modal-mask.show { display: flex; }
     .modal {
-      background: white;
-      width: 100%;
-      max-width: 500px;
-      border-radius: 16px 16px 0 0;
-      max-height: min(80vh, 100%);
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      padding: 20px 16px calc(24px + var(--safe-bottom));
+      background: #f7efdf; width: 100%; max-width: 500px;
+      border-radius: 6px 6px 0 0; border-top: 1px solid var(--gold-line);
+      max-height: min(80vh, 100%); overflow-y: auto;
+      padding: 22px 18px calc(24px + var(--safe-bottom));
       animation: slideUp 0.25s ease;
     }
-
-    @keyframes slideUp {
-      from { transform: translateY(40px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
+    @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--gold-line);
     }
-
     .modal-header h3 {
-      font-size: 17px;
+      font-family: "Noto Serif SC", serif; font-size: 15px; font-weight: 600;
+      color: var(--gold); letter-spacing: 2px;
     }
-
     .modal-close {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: none;
-      background: #f0f0f0;
-      font-size: 18px;
-      cursor: pointer;
+      width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--gold-line);
+      background: transparent; color: var(--muted); font-size: 16px; cursor: pointer;
     }
-
     .order-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px dashed var(--border);
-      font-size: 14px;
-    }
-
-    .order-total {
-      margin-top: 14px;
-      padding-top: 12px;
-      border-top: 2px solid var(--border);
-      font-size: 16px;
-      font-weight: 700;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .copy-area {
-      margin-top: 16px;
-      background: #f9f6f0;
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 13px;
-      line-height: 1.7;
-      white-space: pre-wrap;
-      word-break: break-all;
-      border: 1px solid var(--border);
-    }
-
-    .btn-copy {
-      width: 100%;
-      margin-top: 12px;
-      padding: 12px;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .btn-copy:active {
-      background: var(--primary-dark);
-    }
-
-    .empty-tip {
-      text-align: center;
-      color: var(--muted);
-      padding: 30px 0;
-      font-size: 14px;
-    }
-
-    .note {
-      margin: 8px 12px 20px;
-      font-size: 12px;
-      color: var(--muted);
-      background: #fff8e8;
-      border-radius: 8px;
-      padding: 10px 12px;
-      border: 1px solid #f5e6c8;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* 推荐套餐 - 视觉布局优化 */
-    .package-section {
-      margin: 14px 12px 10px;
-    }
-
-    .package-title {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 12px;
-      padding-left: 8px;
-      border-left: 3px solid var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .package-title::before {
-      content: "🔥";
-      font-size: 14px;
-    }
-
-    .package-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .package-card {
-      background: white;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      box-shadow: 0 3px 10px rgba(0,0,0,0.04);
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-
-    .package-card:active {
-      transform: scale(0.99);
-    }
-
-    .package-card .pkg-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 14px 0;
-    }
-
-    .package-card .pkg-tags {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .package-card .tag {
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-weight: 600;
-    }
-
-    .package-card .tag-people {
-      background: #fff0ee;
-      color: var(--primary);
-    }
-
-    .package-card .tag-value {
-      background: #e8f8ef;
-      color: var(--success);
-    }
-
-    .package-card .tag-meat {
-      background: #fff5e6;
-      color: #e67e22;
-    }
-
-    .package-card .pkg-price-badge {
-      background: linear-gradient(135deg, #c0392b, #e74c3c);
-      color: white;
-      font-size: 15px;
-      font-weight: 700;
-      padding: 5px 12px;
-      border-radius: 20px;
-      box-shadow: 0 2px 6px rgba(192, 57, 43, 0.25);
-    }
-
-    .package-card .pkg-body {
-      padding: 10px 14px 14px;
-    }
-
-    .package-card .pkg-name {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-
-    .package-card .pkg-desc {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 12px;
-      line-height: 1.4;
-    }
-
-    .package-card .pkg-dishes {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 14px;
-    }
-
-    .package-card .dish-chip {
-      background: #f7f3eb;
-      border: 1px solid #ebe4d8;
-      color: #555;
-      font-size: 12px;
-      padding: 4px 10px;
-      border-radius: 16px;
-      white-space: nowrap;
-    }
-
-    .btn-add-pkg {
-      width: 100%;
-      padding: 11px;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .btn-add-pkg::before {
-      content: "+";
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    .btn-add-pkg:active {
-      background: var(--primary-dark);
-    }
-
-    .btn-add-pkg.added {
-      background: var(--success);
-    }
-
-    .btn-add-pkg.added::before {
-      content: "✓";
-    }
-
-    /* ================= 菜单写真风格重排 =================
-       只调整视觉层与响应式布局，保留原有 DOM id 和交互事件。 */
-    :root {
-      --primary: #8f2025;
-      --primary-dark: #64151a;
-      --bg: #3c3c3b;
-      --card: #f7efdf;
-      --text: #443a35;
-      --muted: #88766b;
-      --border: #d7c3a9;
-      --paper-line: rgba(126, 89, 61, 0.15);
-      --success: #52734e;
-      --cart-height: 78px;
-    }
-
-    body {
-      background:
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,.09), transparent 30%),
-        radial-gradient(circle at 85% 70%, rgba(0,0,0,.12), transparent 36%),
-        var(--bg);
-      color: var(--text);
-      padding-bottom: calc(var(--cart-height) + var(--safe-bottom) + 20px);
-    }
-
-    .header,
-    .menu-shell {
-      width: min(1240px, 100%);
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .header {
-      position: relative;
-      margin-top: 28px;
-      padding: 18px 28px 16px;
-      background: #9f2428;
-      border-radius: 3px 3px 0 0;
-      border-bottom: 10px solid #73191e;
-      box-shadow: 0 12px 22px rgba(0,0,0,.18);
-      overflow: hidden;
-    }
-
-    .header::before,
-    .header::after {
-      content: "";
-      position: absolute;
-      left: 18px;
-      right: 18px;
-      height: 1px;
-      background: rgba(255, 240, 216, .75);
-      pointer-events: none;
-    }
-
-    .header::before { top: 8px; }
-    .header::after { bottom: 4px; }
-
-    .header h1 {
-      color: #fff9ef;
-      text-align: center;
-      font-family: "STKaiti", "KaiTi", "FZKai-Z03", serif;
-      font-size: clamp(30px, 5vw, 54px);
-      font-weight: 700;
-      letter-spacing: .32em;
-      line-height: 1.12;
-      text-shadow: 0 2px 0 rgba(76, 13, 17, .25);
-    }
-
-    .header .sub {
-      margin-top: 7px;
-      color: #f7ddc4;
-      text-align: center;
-      font-size: 12px;
-      letter-spacing: .18em;
-      opacity: .95;
-    }
-
-    .menu-head-meta {
-      display: flex;
-      justify-content: flex-end;
-      gap: 18px;
-      margin-top: 9px;
-      color: #f9e8d5;
-      font-size: 11px;
-      letter-spacing: .08em;
-      opacity: .9;
-    }
-
-    .menu-shell {
-      position: relative;
-      padding: 0 30px 48px;
-      background:
-        linear-gradient(90deg, transparent 0 14%, rgba(130, 94, 65, .025) 14% 14.5%, transparent 14.5% 100%),
-        repeating-linear-gradient(0deg, rgba(124, 89, 58, .025) 0 1px, transparent 1px 5px),
-        #f4ead8;
-      box-shadow: 0 18px 28px rgba(0,0,0,.2);
-    }
-
-    .menu-shell::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-left: 1px solid rgba(111, 70, 40, .18);
-      border-right: 1px solid rgba(111, 70, 40, .18);
-      pointer-events: none;
-    }
-
-    .budget-bar {
-      margin: 0;
-      padding: 16px 0 14px;
-      background: transparent;
-      border: 0;
-      border-bottom: 1px solid var(--paper-line);
-      border-radius: 0;
-      box-shadow: none;
-    }
-
-    .recommend-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin: 16px 0 12px;
-      padding: 12px 14px;
-      border: 1px solid #cdb79b;
-      border-left: 4px solid var(--primary);
-      border-radius: 2px;
-      background: rgba(255, 251, 242, .72);
-      box-shadow: 0 2px 0 rgba(116, 72, 37, .06);
-    }
-
-    .recommend-copy {
-      min-width: 0;
-    }
-
-    .recommend-title {
-      color: var(--primary);
-      font-family: "STKaiti", "KaiTi", serif;
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: .08em;
-    }
-
-    .recommend-hint {
-      margin-top: 2px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .btn-recommend {
-      flex: 0 0 auto;
-      min-width: 144px;
-      padding: 11px 16px;
-      border: 0;
-      border-radius: 2px;
-      background: var(--primary);
-      color: #fff8ed;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .btn-recommend:active { background: var(--primary-dark); }
-    .btn-recommend.done { background: var(--success); }
-
-    .people-control label,
-    .budget-info .label,
-    .budget-info .hint {
-      color: var(--muted);
-    }
-
-    .people-control button {
-      width: 30px;
-      height: 30px;
-      border-radius: 2px;
-      border: 1px solid #a9907c;
-      background: rgba(255,255,255,.2);
-      color: var(--primary);
-      font-size: 17px;
-    }
-
-    .people-control .num {
-      color: var(--primary);
-      font-family: Georgia, serif;
-      font-size: 20px;
-    }
-
-    .budget-info .amount {
-      color: var(--primary);
-      font-family: Georgia, serif;
-    }
-
-    .package-section {
-      margin: 18px 0 12px;
-    }
-
-    .package-title,
-    .section-title {
-      position: relative;
-      border: 0;
-      padding: 7px 18px;
-      color: #fff8ed;
-      background: var(--primary);
-      box-shadow: inset 0 0 0 2px rgba(255,239,210,.66), inset 0 0 0 5px var(--primary);
-      font-family: "STKaiti", "KaiTi", serif;
-      letter-spacing: .1em;
-      text-align: center;
-    }
-
-    .package-title {
-      width: fit-content;
-      margin: 0 auto 14px;
-      font-size: 19px;
-    }
-
-    .package-title::before,
-    .package-title::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      width: clamp(38px, 12vw, 170px);
-      height: 1px;
-      background: rgba(143,32,37,.45);
-    }
-
-    .package-title::before { right: 100%; margin-right: 14px; }
-    .package-title::after { left: 100%; margin-left: 14px; }
-
-    .package-list {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .package-card {
-      border-radius: 2px;
-      border: 1px solid #cdb79b;
-      background: rgba(255,251,242,.62);
-      box-shadow: 0 2px 0 rgba(116, 72, 37, .08);
-    }
-
-    .package-card .pkg-top {
-      padding: 10px 12px 0;
-    }
-
-    .package-card .pkg-price-badge {
-      border-radius: 2px;
-      background: var(--primary);
-      box-shadow: none;
-    }
-
-    .package-card .pkg-body {
-      padding: 8px 12px 12px;
-    }
-
-    .package-card .pkg-name {
-      font-family: "STKaiti", "KaiTi", serif;
-      color: var(--primary);
-    }
-
-    .package-card .dish-chip {
-      border-radius: 2px;
-      background: rgba(228, 209, 184, .35);
-      border-color: #d8c4aa;
-    }
-
-    .btn-add-pkg,
-    .btn-copy {
-      border-radius: 2px;
-      background: var(--primary);
-    }
-
-    .tabs {
-      position: sticky;
-      top: 0;
-      margin: 14px -30px 0;
-      padding: 12px 30px 10px;
-      background: rgba(244,234,216,.95);
-      border-top: 1px solid var(--paper-line);
-      border-bottom: 1px solid var(--paper-line);
-      gap: 10px;
-    }
-
-    .tab {
-      min-height: 32px;
-      padding: 6px 13px;
-      border-radius: 2px;
-      border: 1px solid #b89a80;
-      background: transparent;
-      color: var(--text);
-      font-size: 13px;
-    }
-
-    .tab.active {
-      border-color: var(--primary);
-      background: var(--primary);
-      color: #fff7e9;
-    }
-
-    .note {
-      margin: 12px 0 20px;
-      padding: 9px 12px;
-      border-radius: 2px;
-      border: 1px solid #d8b57e;
-      border-left: 4px solid var(--primary);
-      background: rgba(255,248,226,.7);
-      color: #765c48;
-    }
-
-    #menuContainer {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 20px 24px;
-      align-items: start;
-    }
-
-    .section {
-      margin: 0;
-      padding: 0 12px 10px;
-      border-bottom: 1px solid var(--paper-line);
-    }
-
-    .section-title {
-      width: fit-content;
-      min-width: 142px;
-      margin: 0 auto 7px;
-      font-size: 19px;
-      line-height: 1.2;
-    }
-
-    .dish-list {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0 14px;
-    }
-
-    .dish {
-      min-width: 0;
-      min-height: 52px;
-      padding: 7px 0 6px;
-      gap: 6px;
-      border: 0;
-      border-bottom: 1px dashed rgba(124, 89, 58, .27);
-      border-radius: 0;
-      background: transparent;
-    }
-
-    .dish-name {
-      overflow: hidden;
-      color: #51443d;
-      font-size: 13px;
-      font-weight: 600;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .dish-price {
-      margin-top: 1px;
-      color: #7d6250;
-      font-family: Georgia, serif;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .dish-price span {
-      color: var(--muted);
-      font-family: inherit;
-    }
-
-    .qty-control {
-      gap: 3px;
-      padding-top: 2px;
-    }
-
-    .qty-btn {
-      width: 22px;
-      height: 22px;
-      border-radius: 2px;
-      border: 1px solid #b79b84;
-      background: transparent;
-      color: var(--primary);
-      font-size: 14px;
-    }
-
-    .qty-btn.plus {
-      border-color: var(--primary);
-      background: transparent;
-      color: var(--primary);
-    }
-
-    .qty {
-      min-width: 16px;
-      color: var(--primary);
-      font-family: Georgia, serif;
-      font-size: 12px;
-    }
-
-    .cart-bar {
-      left: 50%;
-      right: auto;
-      width: min(1240px, 100%);
-      transform: translateX(-50%);
-      border: 0;
-      border-top: 3px solid #d5ac7f;
-      border-radius: 8px 8px 0 0;
-      background: #791a20;
-      box-shadow: 0 -6px 24px rgba(0,0,0,.22);
-    }
-
-    .cart-summary .total-price,
-    .cart-summary .count {
-      color: #fff7e7;
-    }
-
-    .cart-summary .diff.over {
-      background: #f9ddd0;
-      color: var(--primary);
-    }
-
-    .cart-summary .diff.under {
-      background: #dcebd5;
-      color: #3f6339;
-    }
-
-    .btn-order {
-      border-radius: 2px;
-      background: #f2d0a9;
-      color: #74191e;
-      box-shadow: inset 0 0 0 1px rgba(116,25,30,.22);
-    }
-
-    .btn-order:active { background: #e7b985; }
-    .btn-order:disabled { background: #b69a84; color: #eee1d4; }
-
-    .modal {
-      border: 1px solid #cdb79b;
-      border-bottom: 0;
-      border-radius: 5px 5px 0 0;
-      background: #f7efdf;
-    }
-
-    .modal-header h3,
-    .order-total { color: var(--primary); }
-
-    .copy-area {
-      border-radius: 2px;
-      background: rgba(255,255,255,.45);
-    }
-
-    .order-item {
-      align-items: center;
-      gap: 10px;
-    }
-
-    .order-item-main {
-      display: flex;
-      flex: 1;
-      min-width: 0;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid rgba(126,89,61,0.1);
+      font-size: 13px; color: var(--text-secondary); gap: 8px;
+    }
+    .order-item-main { flex: 1; display: flex; justify-content: space-between; gap: 10px; }
+    .order-item-main span:last-child { font-family: "Noto Serif SC", serif; color: var(--gold); }
     .btn-remove-item {
-      flex: 0 0 auto;
-      padding: 4px 8px;
-      border: 1px solid #c38b7b;
-      border-radius: 2px;
-      background: transparent;
-      color: var(--primary);
-      font-size: 12px;
-      cursor: pointer;
+      padding: 3px 8px; border: 1px solid var(--gold-line); background: transparent;
+      color: var(--muted); font-size: 11px; cursor: pointer;
     }
-
-    .btn-remove-item:active {
-      background: #f5ddd4;
+    .order-total {
+      margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--gold-line);
+      display: flex; justify-content: space-between; font-size: 14px;
     }
-
-    @media (max-width: 700px) {
-      body { background: #f4ead8; }
-
-      .header {
-        margin-top: 0;
-        border-radius: 0;
-        box-shadow: 0 6px 15px rgba(82, 24, 19, .18);
-      }
-
-      .header h1 {
-        font-size: 29px;
-        letter-spacing: .16em;
-      }
-
-      .menu-head-meta {
-        justify-content: center;
-        gap: 10px;
-        font-size: 10px;
-      }
-
-      .menu-shell {
-        padding: 0 16px 36px;
-        box-shadow: none;
-      }
-
-      .tabs {
-        margin-left: -16px;
-        margin-right: -16px;
-        padding-left: 16px;
-        padding-right: 16px;
-      }
-
-      .package-list,
-      #menuContainer {
-        grid-template-columns: 1fr;
-      }
-
-      .recommend-bar {
-        align-items: stretch;
-        flex-direction: column;
-        gap: 10px;
-      }
-
-      .btn-recommend { width: 100%; }
-
-      .dish-list { grid-template-columns: 1fr; }
-
-      .section { padding-left: 4px; padding-right: 4px; }
+    .order-total span:last-child { font-family: "Noto Serif SC", serif; color: var(--gold); font-size: 17px; }
+    .copy-area {
+      margin-top: 14px; background: var(--paper); border: 1px solid var(--gold-line);
+      padding: 12px; font-size: 12px; line-height: 1.7; white-space: pre-wrap;
+      color: var(--text-secondary); font-weight: 300;
     }
-
-    @media (min-width: 701px) and (max-width: 980px) {
-      .header { margin-top: 16px; }
-      .menu-shell { padding-left: 22px; padding-right: 22px; }
-      .tabs { margin-left: -22px; margin-right: -22px; padding-left: 22px; padding-right: 22px; }
+    .btn-copy {
+      width: 100%; margin-top: 12px; padding: 13px; background: var(--gold);
+      color: #fff9ef; border: none; font-size: 13px; font-weight: 500; letter-spacing: 1.5px; cursor: pointer;
     }
-
-    /* ================= 手机 / 电脑浏览器适配 ================= */
-    html,
-    body {
-      overflow-x: hidden;
-    }
-
-    @media (min-width: 1100px) {
-      .header,
-      .menu-shell {
-        width: min(1440px, calc(100vw - 48px));
-      }
-
-      .header {
-        margin-top: 20px;
-        padding-left: 38px;
-        padding-right: 38px;
-      }
-
-      .menu-shell {
-        padding-left: 38px;
-        padding-right: 38px;
-        padding-bottom: 60px;
-      }
-
-      .tabs {
-        margin-left: -38px;
-        margin-right: -38px;
-        padding-left: 38px;
-        padding-right: 38px;
-      }
-
-      .section {
-        padding-left: 16px;
-        padding-right: 16px;
-      }
-
-      .dish-list {
-        gap: 0 24px;
-      }
-
-      .dish {
-        min-height: 58px;
-        padding-top: 9px;
-        padding-bottom: 8px;
-      }
-
-      .dish-name { font-size: 14px; }
-      .dish-price { font-size: 14px; }
-      .qty-btn { width: 24px; height: 24px; }
-    }
-
-    @media (min-width: 701px) and (max-width: 1099px) {
-      .header,
-      .menu-shell {
-        width: calc(100% - 24px);
-      }
-
-      .menu-shell {
-        padding-left: 24px;
-        padding-right: 24px;
-      }
-
-      .tabs {
-        margin-left: -24px;
-        margin-right: -24px;
-        padding-left: 24px;
-        padding-right: 24px;
-      }
-    }
-
-    @media (min-width: 701px) and (max-width: 900px) {
-      .dish-list { grid-template-columns: 1fr; }
-      .section-title { font-size: 17px; }
-      .dish { min-height: 48px; }
-    }
-
-    @media (max-width: 700px) {
-      .header,
-      .menu-shell {
-        width: 100%;
-        min-width: 0;
-      }
-
-      .header {
-        padding-left: 16px;
-        padding-right: 16px;
-      }
-
-      .menu-shell {
-        padding-left: 16px;
-        padding-right: 16px;
-        padding-bottom: calc(36px + var(--cart-height));
-      }
-
-      .budget-bar {
-        gap: 12px;
-        padding-top: 14px;
-        padding-bottom: 12px;
-      }
-
-      .people-control { gap: 8px; }
-      .people-control label { font-size: 13px; }
-      .budget-info .label { font-size: 11px; }
-      .budget-info .amount { font-size: 19px; }
-
-      .recommend-title { font-size: 17px; }
-      .recommend-hint { font-size: 11px; }
-
-      .tabs {
-        top: 0;
-        z-index: 90;
-      }
-
-      .section-title {
-        min-width: 126px;
-        font-size: 17px;
-      }
-
-      .dish {
-        min-height: 48px;
-        padding-top: 8px;
-        padding-bottom: 7px;
-      }
-
-      .dish-name { font-size: 14px; }
-      .dish-price { font-size: 13px; }
-
-      .cart-bar {
-        width: 100%;
-        border-radius: 0;
-        padding-left: 14px;
-        padding-right: 14px;
-      }
-
-      .btn-order {
-        min-width: 112px;
-        padding-left: 14px;
-        padding-right: 14px;
-      }
-
-      .modal {
-        max-width: 100%;
-        max-height: 86vh;
-      }
-
-      .order-item-main { gap: 6px; }
-      .btn-remove-item { padding: 5px 9px; }
-    }
-
-    /* ================= 全屏铺满与鼠标滚轮修复 ================= */
-    html {
-      height: auto;
-      min-height: 100%;
-      overflow-y: auto;
-    }
-
-    body {
-      min-height: 100vh;
-      overflow-y: auto !important;
-      overscroll-behavior-y: auto;
-      -webkit-overflow-scrolling: auto;
-    }
-
-    @media (min-width: 701px) {
-      body {
-        background: #f4ead8;
-      }
-
-      .header,
-      .menu-shell {
-        width: 100%;
-      }
-
-      .header {
-        margin-top: 0;
-        border-radius: 0;
-      }
-
-      .menu-shell {
-        min-height: calc(100vh - 150px);
-        box-shadow: none;
-      }
-
-      .cart-bar {
-        width: 100%;
-        border-radius: 0;
-      }
-    }
+    .empty-tip { text-align: center; color: var(--muted); padding: 24px 0; font-size: 13px; }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>滋味轩川菜馆</h1>
-    <div class="sub">群点餐助手 · 10:00-10:30 点餐</div>
-    <div class="menu-head-meta">
-      <span>桌号：________</span>
-      <span>人数：______</span>
-      <span>点菜日期：____年__月__日</span>
+    <h1>滋味轩</h1>
+    <div class="sub">新中式 · 川味精选</div>
+    <div class="divider"></div>
+  </div>
+
+
+  <div class="selected-bar" id="selectedBar">
+    <div class="sel-left">
+      <div class="sel-count" id="selCount">已选 0 道</div>
+      <div class="sel-names" id="selNames"></div>
+    </div>
+    <div class="sel-right">
+      <span class="sel-price" id="selPrice">¥0</span>
+      <span class="sel-go">查看</span>
     </div>
   </div>
 
-  <main class="menu-shell">
-    <div class="budget-bar">
+  <div class="budget-bar">
     <div class="people-control">
       <label>人数</label>
       <button id="minusPeople">−</button>
@@ -1385,33 +478,55 @@
       <div class="amount" id="budgetAmount">¥102</div>
       <div class="hint">米饭另计 1元/人</div>
     </div>
-    </div>
+  </div>
 
-    <div class="recommend-bar" id="recommendBar">
-      <div class="recommend-copy">
-        <div class="recommend-title">按人数智能推荐</div>
-        <div class="recommend-hint" id="recommendHint">优先推荐小炒和特色里的高价菜，再用凉菜等小菜补齐餐标；不推荐汤类、花生米类、水饺及酒水</div>
-      </div>
-      <button class="btn-recommend" id="btnRecommend">一键推荐菜</button>
+  <div class="tools">
+    <div class="tool-row">
+      <button class="btn-tool" id="btnTaste">口味过滤</button>
+      <button class="btn-tool" id="btnBlind">盲盒随机</button>
+      <button class="btn-tool" id="btnHistory">历史记录</button>
     </div>
+    <div class="tool-hint" id="toolHint"></div>
+  </div>
 
-    <div class="tabs" id="tabs">
+  <div class="taste-panel" id="tastePanel">
+    <div class="taste-title">选择偏好（可多选）</div>
+    <div class="taste-tags" id="tasteTags">
+      <button class="taste-tag" data-taste="mild">微辣/不辣</button>
+      <button class="taste-tag" data-taste="spicy">中辣以上</button>
+      <button class="taste-tag" data-taste="no-cilantro">不吃香菜</button>
+      <button class="taste-tag" data-taste="no-onion">少葱</button>
+      <button class="taste-tag" data-taste="meat">偏肉</button>
+      <button class="taste-tag" data-taste="veg">偏素</button>
+    </div>
+  </div>
+
+  <div class="history-panel" id="historyPanel">
+    <div id="historyList"></div>
+  </div>
+
+
+  <div class="search-wrap" id="searchWrap">
+    <span class="search-icon">⌕</span>
+    <input type="search" id="searchInput" placeholder="搜索菜名 / 拼音首字母…" autocomplete="off" enterkeyhint="search" />
+    <button type="button" class="search-clear" id="searchClear" aria-label="清除">×</button>
+  </div>
+
+  <div class="tabs" id="tabs">
     <div class="tab active" data-cat="all">全部</div>
     <div class="tab" data-cat="liangcai">精品凉菜</div>
     <div class="tab" data-cat="xiaochao">家常小炒</div>
     <div class="tab" data-cat="tese">特色推荐</div>
     <div class="tab" data-cat="tang">汤类</div>
     <div class="tab" data-cat="jiushui">酒水</div>
-    </div>
+  </div>
 
-    <div class="note">
-    推荐规则：餐标为17元/人，优先使用小炒和特色里的高价菜，不足部分用凉菜等小菜补齐；推荐总价最多只上浮1人餐标。任何人数都不推荐汤类、花生米类、水饺、锅盔及酒水。点完后可一键复制点菜单发给吴老板。
-    </div>
+  <div class="note">规则：人数×17元点菜，超出现场补齐。10:00–10:30点餐。点完可一键复制发给老板。</div>
+  <div id="menuContainer"></div>
 
-    <div id="menuContainer"></div>
-  </main>
 
-  <!-- Bottom Cart -->
+  <div class="budget-tip" id="budgetTip"></div>
+
   <div class="cart-bar">
     <div class="cart-summary">
       <div class="total-line">
@@ -1423,7 +538,6 @@
     <button class="btn-order" id="btnOrder" disabled>查看点菜单</button>
   </div>
 
-  <!-- Modal -->
   <div class="modal-mask" id="modalMask">
     <div class="modal">
       <div class="modal-header">
@@ -1431,504 +545,552 @@
         <button class="modal-close" id="modalClose">×</button>
       </div>
       <div id="orderList"></div>
-      <div class="order-total">
-        <span>菜品合计</span>
-        <span id="modalTotal">¥0</span>
-      </div>
-      <div style="font-size:13px;color:#888;margin-top:6px;" id="modalBudgetTip"></div>
+      <div class="order-total"><span>菜品合计</span><span id="modalTotal">¥0</span></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px;" id="modalBudgetTip"></div>
       <div class="copy-area" id="copyText"></div>
       <button class="btn-copy" id="btnCopy">一键复制点菜单</button>
     </div>
   </div>
 
   <script>
-    // ========== 菜单数据 ==========
+    // 菜品数据 + 口味标签
     const menuData = [
-      // 精品凉菜
-      { id: 1, name: "凉拌猪耳朵", price: 38, cat: "liangcai" },
-      { id: 2, name: "农家拌土鸡", price: 28, cat: "liangcai" },
-      { id: 3, name: "招牌白肉", price: 29, cat: "liangcai" },
-      { id: 4, name: "卤鸭", price: 38, cat: "liangcai" },
-      { id: 5, name: "盐边牛肉", price: 48, cat: "liangcai" },
-      { id: 6, name: "香卤豆干", price: 12, cat: "liangcai" },
-      { id: 7, name: "香卤牛肉", price: 48, cat: "liangcai" },
-      { id: 8, name: "乡村鸡蛋干", price: 12, cat: "liangcai" },
-      { id: 9, name: "凉拌猪头肉", price: 28, cat: "liangcai" },
-      { id: 10, name: "豆花拌花生米", price: 15, cat: "liangcai" },
-      { id: 11, name: "青椒皮蛋", price: 15, cat: "liangcai" },
-      { id: 12, name: "川北凉粉", price: 12, cat: "liangcai" },
-      { id: 13, name: "蒜泥黄瓜", price: 12, cat: "liangcai" },
-      { id: 14, name: "花生米", price: 10, cat: "liangcai" },
-      { id: 15, name: "爽口黑木耳", price: 12, cat: "liangcai" },
-
-      // 家常小炒
-      { id: 20, name: "锅巴肉片", price: 39, cat: "xiaochao" },
-      { id: 21, name: "椒盐小酥肉", price: 38, cat: "xiaochao" },
-      { id: 22, name: "农家小炒肉", price: 28, cat: "xiaochao" },
-      { id: 23, name: "肝腰合炒", price: 32, cat: "xiaochao" },
-      { id: 24, name: "泡椒鸡杂", price: 28, cat: "xiaochao" },
-      { id: 25, name: "水煮肉片", price: 38, cat: "xiaochao" },
-      { id: 26, name: "腊肉炒笋丝", price: 38, cat: "xiaochao" },
-      { id: 27, name: "鱼香肉丝", price: 23, cat: "xiaochao" },
-      { id: 28, name: "火爆肥肠", price: 42, cat: "xiaochao" },
-      { id: 29, name: "油渣莲白", price: 18, cat: "xiaochao" },
-      { id: 30, name: "红糖糍粑", price: 16, cat: "xiaochao" },
-      { id: 31, name: "米凉粉烧牛肉", price: 38, cat: "xiaochao" },
-      { id: 32, name: "炒时蔬", price: 13, cat: "xiaochao" },
-      { id: 33, name: "黄花豆花", price: 22, cat: "xiaochao" },
-      { id: 34, name: "外婆菜炒鸡蛋", price: 20, cat: "xiaochao" },
-      { id: 35, name: "滋味榨菜鱼", price: 38, cat: "xiaochao" },
-      { id: 36, name: "小煎鸡", price: 42, cat: "xiaochao" },
-      { id: 37, name: "酱肉丝", price: 32, cat: "xiaochao" },
-      { id: 38, name: "泡椒猪肝", price: 25, cat: "xiaochao" },
-      { id: 39, name: "虎皮青椒", price: 16, cat: "xiaochao" },
-      { id: 40, name: "汉源花椒鱼", price: 58, cat: "xiaochao" },
-      { id: 41, name: "鲜椒仔姜兔", price: 48, cat: "xiaochao" },
-      { id: 42, name: "青椒肉丝", price: 23, cat: "xiaochao" },
-      { id: 43, name: "宫保鸡丁", price: 23, cat: "xiaochao" },
-      { id: 44, name: "鱼香茄子", price: 16, cat: "xiaochao" },
-      { id: 45, name: "铁板牛柳", price: 46, cat: "xiaochao" },
-      { id: 46, name: "铁板鱿鱼须", price: 48, cat: "xiaochao" },
-      { id: 47, name: "芹菜尖椒牛肉丝", price: 38, cat: "xiaochao" },
-      { id: 48, name: "酸菜豆旺", price: 15, cat: "xiaochao" },
-      { id: 49, name: "青椒煸香瓜", price: 15, cat: "xiaochao" },
-      { id: 50, name: "番茄牛柳", price: 48, cat: "xiaochao" },
-      { id: 51, name: "咸烧白", price: 28, cat: "xiaochao" },
-      { id: 52, name: "小炒黄牛肉", price: 46, cat: "xiaochao" },
-      { id: 53, name: "番茄炒蛋", price: 18, cat: "xiaochao" },
-      { id: 54, name: "青椒玉米", price: 15, cat: "xiaochao" },
-      { id: 55, name: "白灼虾", price: 58, cat: "xiaochao" },
-      { id: 56, name: "血旺鸡杂", price: 28, cat: "xiaochao" },
-      { id: 57, name: "青椒土豆丝", price: 13, cat: "xiaochao" },
-      { id: 58, name: "芹菜木耳干", price: 15, cat: "xiaochao" },
-      { id: 59, name: "白灼凤尾", price: 15, cat: "xiaochao" },
-      { id: 60, name: "香辣虾", price: 58, cat: "xiaochao" },
-      { id: 61, name: "盐煎肉", price: 29, cat: "xiaochao" },
-      { id: 62, name: "芹菜木耳肉片", price: 23, cat: "xiaochao" },
-      { id: 63, name: "山药木耳", price: 15, cat: "xiaochao" },
-      { id: 64, name: "鸡汁野生菌", price: 22, cat: "xiaochao" },
-      { id: 65, name: "鸡汁青菜钵", price: 18, cat: "xiaochao" },
-
-      // 特色推荐（下半页）
-      { id: 70, name: "过江牛肉", price: 48, cat: "tese" },
-      { id: 71, name: "水煮牛肉", price: 48, cat: "tese" },
-      { id: 72, name: "爆炒腰花", price: 48, cat: "tese" },
-      { id: 73, name: "泡椒腰花", price: 48, cat: "tese" },
-      { id: 74, name: "沸腾乌鱼片", price: 58, cat: "tese" },
-      { id: 75, name: "滋味沸腾鱼", price: 48, cat: "tese" },
-      { id: 76, name: "酸汤乌鱼片", price: 58, cat: "tese" },
-      { id: 77, name: "酸菜鱼(草鱼)", price: 48, cat: "tese" },
-      { id: 78, name: "葱香牛柳", price: 43, cat: "tese" },
-      { id: 79, name: "大蒜烧肚条", price: 49, cat: "tese" },
-      { id: 80, name: "鲜溜虾仁", price: 48, cat: "tese" },
-      { id: 81, name: "五香驴肉", price: 48, cat: "tese" },
-      { id: 82, name: "滋味毛血旺", price: 43, cat: "tese" },
-      { id: 83, name: "尖椒炒烟拱嘴", price: 38, cat: "tese" },
-      { id: 84, name: "家常鱿鱼", price: 48, cat: "tese" },
-      { id: 85, name: "豆瓣鲜鱼", price: 42, cat: "tese" },
-      { id: 86, name: "鲜锅兔", price: 48, cat: "tese" },
-      { id: 87, name: "豆花肥肠", price: 38, cat: "tese" },
-      { id: 88, name: "家常回锅肉", price: 28, cat: "tese" },
-      { id: 89, name: "重庆辣子鸡", price: 42, cat: "tese" },
-      { id: 90, name: "滋味烤鱼", price: 78, cat: "tese" },
-      { id: 91, name: "干锅排骨", price: 68, cat: "tese" },
-      { id: 92, name: "干锅肥肠", price: 58, cat: "tese" },
-      { id: 93, name: "干锅鸡", price: 58, cat: "tese" },
-      { id: 94, name: "干锅牛柳", price: 58, cat: "tese" },
-      { id: 95, name: "干锅虾", price: 68, cat: "tese" },
-      { id: 96, name: "干锅鱿鱼须", price: 68, cat: "tese" },
-      { id: 97, name: "红糖锅盔", price: 16, cat: "tese" },
-      { id: 98, name: "水饺", price: 25, cat: "tese" },
-
-      // 汤类
-      { id: 100, name: "酥肉圆子汤", price: 32, cat: "tang" },
-      { id: 101, name: "黄瓜皮蛋汤", price: 13, cat: "tang" },
-      { id: 102, name: "玉米萝卜排骨汤", price: 32, cat: "tang" },
-      { id: 103, name: "番茄煎蛋汤", price: 13, cat: "tang" },
-      { id: 104, name: "酥肉汤", price: 22, cat: "tang" },
-      { id: 105, name: "豆腐汤", price: 13, cat: "tang" },
-      { id: 106, name: "圆子汤", price: 20, cat: "tang" },
-      { id: 107, name: "酸菜粉丝汤", price: 13, cat: "tang" },
-      { id: 108, name: "紫菜蛋花汤", price: 13, cat: "tang" },
-      { id: 109, name: "紫菜汤", price: 10, cat: "tang" },
-
-      // 酒水
-      { id: 110, name: "劲酒", price: 18, cat: "jiushui", unit: "瓶" },
-      { id: 111, name: "梅子泡酒", price: 5, cat: "jiushui", unit: "两" },
-      { id: 112, name: "小唯怡豆奶", price: 5, cat: "jiushui", unit: "瓶" },
-      { id: 113, name: "五粮", price: 25, cat: "jiushui", unit: "两" },
-      { id: 114, name: "枸杞泡酒", price: 5, cat: "jiushui", unit: "两" },
-      { id: 115, name: "大唯怡豆奶", price: 18, cat: "jiushui", unit: "瓶" },
-      { id: 116, name: "歪嘴郎", price: 22, cat: "jiushui", unit: "瓶" },
-      { id: 117, name: "可乐罐", price: 5, cat: "jiushui", unit: "瓶" },
-      { id: 118, name: "红星二锅头", price: 10, cat: "jiushui", unit: "瓶" },
-      { id: 119, name: "王老吉", price: 6, cat: "jiushui", unit: "瓶" },
-      { id: 120, name: "雪碧罐", price: 4, cat: "jiushui", unit: "瓶" },
-      { id: 121, name: "雪花纯生", price: 12, cat: "jiushui", unit: "瓶" },
-      { id: 122, name: "雪花勇闯", price: 8, cat: "jiushui", unit: "瓶" },
-      { id: 123, name: "矿泉水", price: 2, cat: "jiushui", unit: "瓶" },
+      { id: 1, name: "凉拌猪耳朵", price: 38, cat: "liangcai", tastes: ["mild","meat"] },
+      { id: 2, name: "农家拌土鸡", price: 28, cat: "liangcai", tastes: ["mild","meat"] },
+      { id: 3, name: "招牌白肉", price: 29, cat: "liangcai", tastes: ["mild","meat"] },
+      { id: 4, name: "卤鸭", price: 38, cat: "liangcai", tastes: ["mild","meat"] },
+      { id: 5, name: "盐边牛肉", price: 48, cat: "liangcai", tastes: ["spicy","meat"] },
+      { id: 6, name: "香卤豆干", price: 12, cat: "liangcai", tastes: ["mild","veg"] },
+      { id: 7, name: "香卤牛肉", price: 48, cat: "liangcai", tastes: ["mild","meat"] },
+      { id: 8, name: "乡村鸡蛋干", price: 12, cat: "liangcai", tastes: ["mild","veg"] },
+      { id: 9, name: "凉拌猪头肉", price: 28, cat: "liangcai", tastes: ["mild","meat"] },
+      { id: 10, name: "豆花拌花生米", price: 15, cat: "liangcai", tastes: ["mild","veg"] },
+      { id: 11, name: "青椒皮蛋", price: 15, cat: "liangcai", tastes: ["mild","veg"] },
+      { id: 12, name: "川北凉粉", price: 12, cat: "liangcai", tastes: ["spicy","veg"] },
+      { id: 13, name: "蒜泥黄瓜", price: 12, cat: "liangcai", tastes: ["mild","veg","no-onion"] },
+      { id: 14, name: "花生米", price: 10, cat: "liangcai", tastes: ["mild","veg"] },
+      { id: 15, name: "爽口黑木耳", price: 12, cat: "liangcai", tastes: ["mild","veg"] },
+      { id: 20, name: "锅巴肉片", price: 39, cat: "xiaochao", tastes: ["mild","meat"] },
+      { id: 21, name: "椒盐小酥肉", price: 38, cat: "xiaochao", tastes: ["mild","meat"] },
+      { id: 22, name: "农家小炒肉", price: 28, cat: "xiaochao", tastes: ["spicy","meat"] },
+      { id: 23, name: "肝腰合炒", price: 32, cat: "xiaochao", tastes: ["spicy","meat"] },
+      { id: 24, name: "泡椒鸡杂", price: 28, cat: "xiaochao", tastes: ["spicy","meat"] },
+      { id: 25, name: "水煮肉片", price: 38, cat: "xiaochao", tastes: ["spicy","meat"] },
+      { id: 26, name: "腊肉炒笋丝", price: 38, cat: "xiaochao", tastes: ["mild","meat"] },
+      { id: 27, name: "鱼香肉丝", price: 23, cat: "xiaochao", tastes: ["mild","meat"] },
+      { id: 28, name: "火爆肥肠", price: 42, cat: "xiaochao", tastes: ["spicy","meat"] },
+      { id: 29, name: "油渣莲白", price: 18, cat: "xiaochao", tastes: ["mild","veg"] },
+      { id: 30, name: "红糖糍粑", price: 16, cat: "xiaochao", tastes: ["mild","veg"] },
+      { id: 31, name: "米凉粉烧牛肉", price: 38, cat: "xiaochao", tastes: ["spicy","meat"] },
+      { id: 32, name: "炒时蔬", price: 13, cat: "xiaochao", tastes: ["mild","veg"] },
+      { id: 33, name: "黄花豆花", price: 22, cat: "xiaochao", tastes: ["mild","veg"] },
+      { id: 34, name: "外婆菜炒鸡蛋", price: 20, cat: "xiaochao", tastes: ["mild","veg"] },
+      { id: 35, name: "滋味榨菜鱼", price: 38, cat: "xiaochao", tastes: ["spicy","meat"] },
+      { id: 36, name: "小煎鸡", price: 42, cat: "xiaochao", tastes: ["spicy","meat"] },
+      { id: 37, name: "酱肉丝", price: 32, cat: "xiaochao", tastes: ["mild","meat"] },
+      { id: 38, name: "泡椒猪肝", price: 25, cat: "xiaochao", tastes: ["spicy","meat"] },
+      { id: 39, name: "虎皮青椒", price: 16, cat: "xiaochao", tastes: ["mild","veg"] },
+      { id: 40, name: "汉源花椒鱼", price: 58, cat: "xiaochao", tastes: ["spicy","meat"] },
+      { id: 41, name: "鲜椒仔姜兔", price: 48, cat: "xiaochao", tastes: ["spicy","meat"] },
+      { id: 42, name: "青椒肉丝", price: 23, cat: "xiaochao", tastes: ["mild","meat"] },
+      { id: 43, name: "宫保鸡丁", price: 23, cat: "xiaochao", tastes: ["spicy","meat"] },
+      { id: 44, name: "鱼香茄子", price: 16, cat: "xiaochao", tastes: ["mild","veg"] },
+      { id: 45, name: "铁板牛柳", price: 46, cat: "xiaochao", tastes: ["mild","meat"] },
+      { id: 46, name: "铁板鱿鱼须", price: 48, cat: "xiaochao", tastes: ["spicy","meat"] },
+      { id: 47, name: "芹菜尖椒牛肉丝", price: 38, cat: "xiaochao", tastes: ["spicy","meat"] },
+      { id: 48, name: "酸菜豆旺", price: 15, cat: "xiaochao", tastes: ["mild","veg"] },
+      { id: 49, name: "青椒煸香瓜", price: 15, cat: "xiaochao", tastes: ["mild","veg"] },
+      { id: 50, name: "番茄牛柳", price: 48, cat: "xiaochao", tastes: ["mild","meat"] },
+      { id: 51, name: "咸烧白", price: 28, cat: "xiaochao", tastes: ["mild","meat"] },
+      { id: 52, name: "小炒黄牛肉", price: 46, cat: "xiaochao", tastes: ["spicy","meat"] },
+      { id: 53, name: "番茄炒蛋", price: 18, cat: "xiaochao", tastes: ["mild","veg"] },
+      { id: 54, name: "青椒玉米", price: 15, cat: "xiaochao", tastes: ["mild","veg"] },
+      { id: 55, name: "白灼虾", price: 58, cat: "xiaochao", tastes: ["mild","meat"] },
+      { id: 56, name: "血旺鸡杂", price: 28, cat: "xiaochao", tastes: ["spicy","meat"] },
+      { id: 57, name: "青椒土豆丝", price: 13, cat: "xiaochao", tastes: ["mild","veg"] },
+      { id: 58, name: "芹菜木耳干", price: 15, cat: "xiaochao", tastes: ["mild","veg"] },
+      { id: 59, name: "白灼凤尾", price: 15, cat: "xiaochao", tastes: ["mild","veg"] },
+      { id: 60, name: "香辣虾", price: 58, cat: "xiaochao", tastes: ["spicy","meat"] },
+      { id: 61, name: "盐煎肉", price: 29, cat: "xiaochao", tastes: ["spicy","meat"] },
+      { id: 62, name: "芹菜木耳肉片", price: 23, cat: "xiaochao", tastes: ["mild","meat"] },
+      { id: 63, name: "山药木耳", price: 15, cat: "xiaochao", tastes: ["mild","veg"] },
+      { id: 64, name: "鸡汁野生菌", price: 22, cat: "xiaochao", tastes: ["mild","veg"] },
+      { id: 65, name: "鸡汁青菜钵", price: 18, cat: "xiaochao", tastes: ["mild","veg"] },
+      { id: 70, name: "过江牛肉", price: 48, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 71, name: "水煮牛肉", price: 48, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 72, name: "爆炒腰花", price: 48, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 73, name: "泡椒腰花", price: 48, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 74, name: "沸腾乌鱼片", price: 58, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 75, name: "滋味沸腾鱼", price: 48, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 76, name: "酸汤乌鱼片", price: 58, cat: "tese", tastes: ["mild","meat"] },
+      { id: 77, name: "酸菜鱼(草鱼)", price: 48, cat: "tese", tastes: ["mild","meat"] },
+      { id: 78, name: "葱香牛柳", price: 43, cat: "tese", tastes: ["mild","meat"] },
+      { id: 79, name: "大蒜烧肚条", price: 49, cat: "tese", tastes: ["mild","meat"] },
+      { id: 80, name: "鲜溜虾仁", price: 48, cat: "tese", tastes: ["mild","meat"] },
+      { id: 81, name: "五香驴肉", price: 48, cat: "tese", tastes: ["mild","meat"] },
+      { id: 82, name: "滋味毛血旺", price: 43, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 83, name: "尖椒炒烟拱嘴", price: 38, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 84, name: "家常鱿鱼", price: 48, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 85, name: "豆瓣鲜鱼", price: 42, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 86, name: "鲜锅兔", price: 48, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 87, name: "豆花肥肠", price: 38, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 88, name: "家常回锅肉", price: 28, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 89, name: "重庆辣子鸡", price: 42, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 90, name: "滋味烤鱼", price: 78, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 91, name: "干锅排骨", price: 68, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 92, name: "干锅肥肠", price: 58, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 93, name: "干锅鸡", price: 58, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 94, name: "干锅牛柳", price: 58, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 95, name: "干锅虾", price: 68, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 96, name: "干锅鱿鱼须", price: 68, cat: "tese", tastes: ["spicy","meat"] },
+      { id: 97, name: "红糖锅盔", price: 16, cat: "tese", tastes: ["mild","veg"] },
+      { id: 98, name: "水饺", price: 25, cat: "tese", tastes: ["mild","meat"] },
+      { id: 100, name: "酥肉圆子汤", price: 32, cat: "tang", tastes: ["mild"] },
+      { id: 101, name: "黄瓜皮蛋汤", price: 13, cat: "tang", tastes: ["mild","veg"] },
+      { id: 102, name: "玉米萝卜排骨汤", price: 32, cat: "tang", tastes: ["mild","meat"] },
+      { id: 103, name: "番茄煎蛋汤", price: 13, cat: "tang", tastes: ["mild","veg"] },
+      { id: 104, name: "酥肉汤", price: 22, cat: "tang", tastes: ["mild","meat"] },
+      { id: 105, name: "豆腐汤", price: 13, cat: "tang", tastes: ["mild","veg"] },
+      { id: 106, name: "圆子汤", price: 20, cat: "tang", tastes: ["mild"] },
+      { id: 107, name: "酸菜粉丝汤", price: 13, cat: "tang", tastes: ["mild","veg"] },
+      { id: 108, name: "紫菜蛋花汤", price: 13, cat: "tang", tastes: ["mild","veg"] },
+      { id: 109, name: "紫菜汤", price: 10, cat: "tang", tastes: ["mild","veg"] },
+      { id: 110, name: "劲酒", price: 18, cat: "jiushui", unit: "瓶", tastes: [] },
+      { id: 111, name: "梅子泡酒", price: 5, cat: "jiushui", unit: "两", tastes: [] },
+      { id: 112, name: "小唯怡豆奶", price: 5, cat: "jiushui", unit: "瓶", tastes: [] },
+      { id: 113, name: "五粮", price: 25, cat: "jiushui", unit: "两", tastes: [] },
+      { id: 114, name: "枸杞泡酒", price: 5, cat: "jiushui", unit: "两", tastes: [] },
+      { id: 115, name: "大唯怡豆奶", price: 18, cat: "jiushui", unit: "瓶", tastes: [] },
+      { id: 116, name: "歪嘴郎", price: 22, cat: "jiushui", unit: "瓶", tastes: [] },
+      { id: 117, name: "可乐罐", price: 5, cat: "jiushui", unit: "瓶", tastes: [] },
+      { id: 118, name: "红星二锅头", price: 10, cat: "jiushui", unit: "瓶", tastes: [] },
+      { id: 119, name: "王老吉", price: 6, cat: "jiushui", unit: "瓶", tastes: [] },
+      { id: 120, name: "雪碧罐", price: 4, cat: "jiushui", unit: "瓶", tastes: [] },
+      { id: 121, name: "雪花纯生", price: 12, cat: "jiushui", unit: "瓶", tastes: [] },
+      { id: 122, name: "雪花勇闯", price: 8, cat: "jiushui", unit: "瓶", tastes: [] },
+      { id: 123, name: "矿泉水", price: 2, cat: "jiushui", unit: "瓶", tastes: [] },
     ];
 
-    const catNames = {
-      liangcai: "精品凉菜",
-      xiaochao: "家常小炒",
-      tese: "特色推荐",
-      tang: "汤类",
-      jiushui: "酒水饮料"
-    };
 
-    // ========== 状态 ==========
+    // 常用汉字 -> 拼音首字母（覆盖本菜单）
+    const PY = {"丁":"d","丝":"s","乌":"w","乐":"l","乡":"x","二":"e","五":"w","仁":"r","仔":"z","保":"b","兔":"t","农":"n","凉":"l","凤":"f","劲":"j","勇":"y","北":"b","卜":"b","卤":"l","口":"k","可":"k","合":"h","吉":"j","味":"w","咸":"x","唯":"w","嘴":"z","回":"h","圆":"y","土":"t","外":"w","大":"d","头":"t","奶":"n","姜":"j","婆":"p","子":"z","宫":"g","家":"j","小":"x","尖":"j","尾":"w","山":"s","川":"c","巴":"b","常":"c","干":"g","庆":"q","怡":"y","拌":"b","招":"z","拱":"g","排":"p","时":"s","旺":"w","星":"x","木":"m","朵":"d","杂":"z","村":"c","杞":"q","条":"t","板":"b","枸":"g","柳":"l","梅":"m","椒":"j","榨":"z","歪":"w","毛":"m","水":"s","汁":"z","汉":"h","江":"j","汤":"t","沸":"f","油":"y","泉":"q","泡":"p","泥":"n","渣":"z","源":"y","溜":"l","滋":"z","火":"h","灼":"z","炒":"c","烟":"y","烤":"k","烧":"s","煎":"j","煮":"z","煸":"b","爆":"b","爽":"s","片":"p","牌":"p","牛":"n","猪":"z","玉":"y","王":"w","瓜":"g","瓣":"b","生":"s","番":"f","白":"b","皮":"p","盐":"y","盔":"k","矿":"k","碧":"b","笋":"s","米":"m","粉":"f","粑":"b","粮":"l","糍":"c","糖":"t","紫":"z","红":"h","纯":"c","罐":"g","老":"l","耳":"e","肉":"r","肚":"d","肝":"g","肠":"c","肥":"f","腊":"l","腐":"f","腰":"y","腾":"t","花":"h","芹":"q","茄":"j","药":"y","莲":"l","菌":"j","菜":"c","萝":"l","葱":"c","蒜":"s","蔬":"s","虎":"h","虾":"x","蛋":"d","血":"x","豆":"d","辣":"l","边":"b","过":"g","郎":"l","酒":"j","酥":"s","酱":"j","酸":"s","重":"z","野":"y","钵":"b","铁":"t","锅":"g","闯":"c","雪":"x","青":"q","须":"x","饺":"j","香":"x","驴":"l","骨":"g","鱼":"y","鱿":"y","鲜":"x","鸡":"j","鸭":"y","黄":"h","黑":"h"};
+    function getInitials(name) {
+      let s = "";
+      for (const ch of name) {
+        if (PY[ch]) s += PY[ch];
+        else if (/[a-zA-Z0-9]/.test(ch)) s += ch.toLowerCase();
+      }
+      return s;
+    }
+    // 预处理首字母
+    menuData.forEach(d => { d.py = getInitials(d.name); });
+
+    const catNames = { liangcai: "精品凉菜", xiaochao: "家常小炒", tese: "特色推荐", tang: "汤类", jiushui: "酒水饮料" };
+    const HISTORY_KEY = "zixuan_order_history";
+
     let people = 6;
-    let cart = {}; // id -> qty
+    let cart = {};
+    let activeTastes = new Set();
+    let searchQuery = "";
 
-    // ========== DOM ==========
-    const peopleNumEl = document.getElementById("peopleNum");
-    const budgetAmountEl = document.getElementById("budgetAmount");
-    const menuContainer = document.getElementById("menuContainer");
-    const cartTotalEl = document.getElementById("cartTotal");
-    const cartCountEl = document.getElementById("cartCount");
-    const diffTagEl = document.getElementById("diffTag");
-    const btnOrder = document.getElementById("btnOrder");
-    const modalMask = document.getElementById("modalMask");
-    const orderListEl = document.getElementById("orderList");
-    const modalTotalEl = document.getElementById("modalTotal");
-    const modalBudgetTip = document.getElementById("modalBudgetTip");
-    const copyTextEl = document.getElementById("copyText");
-    const btnCopy = document.getElementById("btnCopy");
-    const btnRecommend = document.getElementById("btnRecommend");
-    const recommendHintEl = document.getElementById("recommendHint");
+    const $ = id => document.getElementById(id);
+    const peopleNumEl = $("peopleNum"), budgetAmountEl = $("budgetAmount");
+    const menuContainer = $("menuContainer"), cartTotalEl = $("cartTotal");
+    const cartCountEl = $("cartCount"), diffTagEl = $("diffTag");
+    const btnOrder = $("btnOrder"), modalMask = $("modalMask");
+    const orderListEl = $("orderList"), modalTotalEl = $("modalTotal");
+    const modalBudgetTip = $("modalBudgetTip"), copyTextEl = $("copyText");
+    const btnCopy = $("btnCopy"), toolHint = $("toolHint");
+    const tastePanel = $("tastePanel"), historyPanel = $("historyPanel");
 
-    // ========== 渲染菜单 ==========
+    function matchTaste(dish) {
+      if (activeTastes.size === 0) return true;
+      const t = dish.tastes || [];
+      if (activeTastes.has("mild") && !t.includes("mild")) return false;
+      if (activeTastes.has("spicy") && !t.includes("spicy")) return false;
+      if (activeTastes.has("meat") && !t.includes("meat")) return false;
+      if (activeTastes.has("veg") && !t.includes("veg")) return false;
+      if (activeTastes.has("no-cilantro")) { /* 当前数据无香菜标记，默认通过 */ }
+      if (activeTastes.has("no-onion") && !t.includes("no-onion") && t.includes("meat")) {
+        // 简化：有 no-onion 标签的优先，其余不强制隐藏
+      }
+      // 多选取交集逻辑：只要满足任一已选偏好即可（更宽松好用）
+      for (const a of activeTastes) {
+        if (a === "no-cilantro" || a === "no-onion") continue;
+        if (t.includes(a)) return true;
+      }
+      // 如果只选了忌口类
+      if ([...activeTastes].every(x => x === "no-cilantro" || x === "no-onion")) return true;
+      return activeTastes.size === 0;
+    }
+
     function renderMenu(filterCat = "all") {
       menuContainer.innerHTML = "";
-      const cats = filterCat === "all"
-        ? ["liangcai", "xiaochao", "tese", "tang", "jiushui"]
-        : [filterCat];
-
+      const cats = filterCat === "all" ? ["liangcai","xiaochao","tese","tang","jiushui"] : [filterCat];
       cats.forEach(cat => {
-        const dishes = menuData.filter(d => d.cat === cat);
-        if (dishes.length === 0) return;
-
+        const dishes = menuData.filter(d => {
+          if (d.cat !== cat) return false;
+          if (!matchTaste(d)) return false;
+          if (searchQuery) {
+            const q = searchQuery.toLowerCase();
+            const hitName = d.name.includes(searchQuery);
+            const hitPy = (d.py || "").includes(q);
+            if (!hitName && !hitPy) return false;
+          }
+          return true;
+        });
+        if (!dishes.length) return;
         const section = document.createElement("div");
         section.className = "section";
         section.innerHTML = `<div class="section-title">${catNames[cat]}</div>`;
         const list = document.createElement("div");
-        list.className = "dish-list";
-
         dishes.forEach(dish => {
           const qty = cart[dish.id] || 0;
           const unit = dish.unit ? `/${dish.unit}` : "";
+          const tags = (dish.tastes || []).filter(t => t === "spicy" || t === "mild").map(t =>
+            `<span class="dish-tag ${t === "spicy" ? "spicy" : ""}">${t === "spicy" ? "辣" : "清淡"}</span>`
+          ).join("");
           const div = document.createElement("div");
           div.className = "dish";
           div.innerHTML = `
             <div class="dish-info">
               <div class="dish-name">${dish.name}</div>
+              <div class="dish-tags">${tags}</div>
               <div class="dish-price">¥${dish.price}<span>${unit}</span></div>
             </div>
             <div class="qty-control">
-              <button class="qty-btn" data-id="${dish.id}" data-act="minus" ${qty === 0 ? "disabled" : ""}>−</button>
+              <button class="qty-btn" data-id="${dish.id}" data-act="minus" ${qty===0?"disabled":""}>−</button>
               <span class="qty">${qty}</span>
               <button class="qty-btn plus" data-id="${dish.id}" data-act="plus">+</button>
-            </div>
-          `;
+            </div>`;
           list.appendChild(div);
         });
-
         section.appendChild(list);
         menuContainer.appendChild(section);
       });
+      if (!menuContainer.children.length) {
+        const tip = document.createElement("div");
+        tip.className = "empty-tip";
+        tip.style.padding = "40px 16px";
+        tip.textContent = searchQuery ? `未找到「${searchQuery}」相关菜品` : "暂无符合条件的菜品";
+        menuContainer.appendChild(tip);
+      }
     }
 
-    // ========== 更新购物车显示 ==========
     function updateCartUI() {
-      let total = 0;
-      let count = 0;
+      let total = 0, count = 0;
       Object.entries(cart).forEach(([id, qty]) => {
         if (qty > 0) {
-          const dish = menuData.find(d => d.id == id);
-          total += dish.price * qty;
-          count += qty;
+          const d = menuData.find(x => x.id == id);
+          total += d.price * qty; count += qty;
         }
       });
-
       const budget = people * 17;
       cartTotalEl.textContent = total;
-      cartCountEl.textContent = count === 0 ? "未选择菜品" : `已选 ${count} 道菜`;
-
+      cartCountEl.textContent = count === 0 ? "未选择菜品" : `已选 ${count} 道`;
+      const budgetTipEl = $("budgetTip");
       if (count === 0) {
         diffTagEl.classList.add("hidden");
         btnOrder.disabled = true;
+        budgetTipEl.className = "budget-tip";
+        budgetTipEl.innerHTML = "";
       } else {
         btnOrder.disabled = false;
         const diff = total - budget;
         diffTagEl.classList.remove("hidden");
-        if (diff > 0) {
-          diffTagEl.textContent = `超预算 ¥${diff}`;
-          diffTagEl.className = "diff over";
-        } else if (diff < 0) {
-          diffTagEl.textContent = `剩余 ¥${-diff}`;
-          diffTagEl.className = "diff under";
+        if (diff > 0) { diffTagEl.textContent = `超 ¥${diff}`; diffTagEl.className = "diff over"; }
+        else if (diff < 0) { diffTagEl.textContent = `余 ¥${-diff}`; diffTagEl.className = "diff under"; }
+        else { diffTagEl.textContent = "刚好"; diffTagEl.className = "diff under"; }
+
+        // 预算接近提醒
+        budgetTipEl.className = "budget-tip show";
+        if (diff === 0) {
+          budgetTipEl.classList.add("ok");
+          budgetTipEl.innerHTML = "刚好卡在预算线上，可以下单了。";
+        } else if (diff > 0 && diff <= 15) {
+          budgetTipEl.classList.add("warn");
+          budgetTipEl.innerHTML = `略超预算 ¥${diff}，可考虑去掉一道小菜，或现场补差价。`;
+        } else if (diff > 15) {
+          budgetTipEl.classList.add("warn");
+          budgetTipEl.innerHTML = `已超预算 ¥${diff}，建议减少菜品或换更便宜的搭配。`;
+        } else if (diff < 0 && diff >= -12) {
+          budgetTipEl.classList.add("ok");
+          // 推荐一道接近剩余预算的便宜菜
+          const remain = -diff;
+          const candidates = menuData
+            .filter(d => d.cat !== "jiushui" && d.price > 0 && d.price <= remain + 3 && !cart[d.id] && matchTaste(d))
+            .sort((a, b) => Math.abs(a.price - remain) - Math.abs(b.price - remain));
+          const suggest = candidates[0];
+          if (suggest) {
+            budgetTipEl.innerHTML = `还差 ¥${remain} 到预算。可以加「${suggest.name}」¥${suggest.price}<span class="tip-action" data-add-id="${suggest.id}">一键加入</span>`;
+          } else {
+            budgetTipEl.innerHTML = `还差 ¥${remain} 到预算，再挑一道小菜就更合适。`;
+          }
+        } else if (diff < -12) {
+          budgetTipEl.classList.add("ok");
+          budgetTipEl.innerHTML = `预算还剩 ¥${-diff}，可以再加 1～2 道菜。`;
         } else {
-          diffTagEl.textContent = "刚好预算";
-          diffTagEl.className = "diff under";
+          budgetTipEl.className = "budget-tip";
+          budgetTipEl.innerHTML = "";
         }
       }
-    }
-
-    // ========== 按人数智能推荐 ==========
-    // 推荐只从菜品中选择，排除酒水；总价控制在餐标至餐标+1人餐标之间。
-    function buildRecommendation() {
-      const budget = people * 17;
-      const upperLimit = budget + 17;
-      const smallGroup = people <= 4;
-      const smallGroupStapleIds = new Set([30, 97, 98]);
-      const alwaysExcludedIds = new Set([10, 14, 98, 108, 109]);
-      const recommendationCats = ["liangcai", "xiaochao", "tese"];
-      const catBits = Object.fromEntries(recommendationCats.map((cat, index) => [cat, 1 << index]));
-      const dishById = Object.fromEntries(menuData.map(dish => [dish.id, dish]));
-      const candidates = menuData
-        .filter(dish => dish.cat !== "jiushui"
-          && dish.cat !== "tang"
-          && dish.price <= upperLimit
-          && !alwaysExcludedIds.has(dish.id)
-          && (!smallGroup || !smallGroupStapleIds.has(dish.id)));
-
-      // 每次点击先打乱候选顺序，再从接近最优的组合池中随机抽取。
-      for (let i = candidates.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+    
+      // 已选吸顶条
+      const selectedBar = $("selectedBar");
+      const selCount = $("selCount");
+      const selNames = $("selNames");
+      const selPrice = $("selPrice");
+      if (count === 0) {
+        selectedBar.classList.remove("show");
+      } else {
+        selectedBar.classList.add("show");
+        selCount.textContent = `已选 ${count} 道`;
+        selPrice.textContent = `¥${total}`;
+        const names = Object.entries(cart)
+          .filter(([, q]) => q > 0)
+          .map(([id, q]) => {
+            const d = menuData.find(x => x.id == id);
+            return q > 1 ? `${d.name}×${q}` : d.name;
+          });
+        selNames.textContent = names.join("、");
       }
 
-      let states = [{ sum: 0, ids: [], mask: 0, counts: {}, randomness: Math.random(), randomSlot: Math.floor(Math.random() * 4) }];
-
-      const stateScore = state => {
-        const categoryCount = Object.keys(state.counts).length;
-        const missing = Math.max(0, budget - state.sum);
-        const excess = Math.max(0, state.sum - budget);
-        const mainValue = state.ids.reduce((sum, id) => {
-          const dish = dishById[id];
-          return sum + (dish && (dish.cat === "xiaochao" || dish.cat === "tese") && dish.price >= 20 ? dish.price : 0);
-        }, 0);
-        return (state.sum >= budget ? 1000 : 0)
-          + categoryCount * 120
-          + mainValue * 5
-          - missing * 6
-          - excess * 3
-          + (state.randomness || 0) * 40;
-      };
-
-      candidates.forEach(dish => {
-        const additions = [];
-        states.forEach(state => {
-          const nextSum = state.sum + dish.price;
-          if (nextSum > upperLimit) return;
-          const maxPerCategory = Math.max(2, Math.ceil(people / 5));
-          if ((state.counts[dish.cat] || 0) >= maxPerCategory) return;
-          const counts = { ...state.counts };
-          counts[dish.cat] = (counts[dish.cat] || 0) + 1;
-          additions.push({
-            sum: nextSum,
-            ids: state.ids.concat(dish.id),
-            mask: state.mask | (catBits[dish.cat] || 0),
-            counts,
-            randomness: Math.random(),
-            randomSlot: Math.floor(Math.random() * 4)
-          });
-        });
-
-        const bestByShape = new Map();
-        states.concat(additions).forEach(state => {
-          const key = `${state.sum}|${state.mask}|${state.randomSlot}`;
-          const current = bestByShape.get(key);
-          if (!current || stateScore(state) > stateScore(current)) {
-            bestByShape.set(key, state);
-          }
-        });
-
-        states = [...bestByShape.values()]
-          .sort((a, b) => stateScore(b) - stateScore(a))
-          .slice(0, 2400);
-      });
-
-      const finalScore = state => {
-        const categoryCount = Object.keys(state.counts).length;
-        const excess = state.sum - budget;
-        const mainValue = state.ids.reduce((sum, id) => {
-          const dish = dishById[id];
-          return sum + (dish && (dish.cat === "xiaochao" || dish.cat === "tese") && dish.price >= 20 ? dish.price : 0);
-        }, 0);
-        return categoryCount * 160 + mainValue * 12 - excess * 5 + (state.randomness || 0) * 100;
-      };
-
-      const valid = states
-        .filter(state => state.sum >= budget && state.sum <= upperLimit && state.ids.length > 0)
-        .sort((a, b) => finalScore(b) - finalScore(a));
-      const fallback = states
-        .filter(state => state.ids.length > 0)
-        .sort((a, b) => Math.abs(a.sum - budget) - Math.abs(b.sum - budget))[0];
-      const randomPool = valid.slice(0, Math.min(100, valid.length));
-      const selected = randomPool.length
-        ? randomPool[Math.floor(Math.random() * randomPool.length)]
-        : fallback || { sum: 0, ids: [], counts: {} };
-
-      return {
-        total: selected.sum,
-        dishes: selected.ids.map(id => menuData.find(dish => dish.id === id)).filter(Boolean)
-      };
     }
 
-    btnRecommend.addEventListener("click", () => {
-      const result = buildRecommendation();
+    // 盲盒随机（预算附近）
+    function blindBox() {
+      const budget = people * 17;
+      const upper = budget + 20;
+      const pool = menuData.filter(d =>
+        d.cat !== "jiushui" && d.cat !== "tang" && d.price <= 50 && matchTaste(d)
+      );
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      const picked = [];
+      let sum = 0;
+      for (const d of pool) {
+        if (sum + d.price > upper) continue;
+        if (picked.some(p => p.cat === d.cat) && picked.filter(p => p.cat === d.cat).length >= 2) continue;
+        picked.push(d);
+        sum += d.price;
+        if (sum >= budget && picked.length >= Math.max(3, Math.floor(people / 2))) break;
+      }
+      if (picked.length < 2) {
+        toolHint.textContent = "盲盒失败，请放宽口味过滤后再试";
+        return;
+      }
       cart = {};
-      result.dishes.forEach(dish => { cart[dish.id] = 1; });
-
-      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+      picked.forEach(d => { cart[d.id] = 1; });
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
       document.querySelector('.tab[data-cat="all"]').classList.add("active");
       renderMenu("all");
       updateCartUI();
-
-      const budget = people * 17;
-      const diff = result.total - budget;
-      recommendHintEl.textContent = `已推荐 ${result.dishes.length} 道菜，合计 ¥${result.total}（餐标 ¥${budget}${diff > 0 ? `，上浮 ¥${diff}` : "，刚好达标"}，优先高价菜补充小菜，已排除汤类、花生米类、水饺及酒水）`;
-      btnRecommend.textContent = "已生成推荐 ✓";
-      btnRecommend.classList.add("done");
-      setTimeout(() => {
-        btnRecommend.textContent = "一键推荐菜";
-        btnRecommend.classList.remove("done");
-      }, 1800);
-    });
-
-    // ========== 事件 ==========
-    document.getElementById("minusPeople").addEventListener("click", () => {
-      if (people > 1) {
-        people--;
-        peopleNumEl.textContent = people;
-        budgetAmountEl.textContent = "¥" + (people * 17);
-        updateCartUI();
-      }
-    });
-
-    document.getElementById("plusPeople").addEventListener("click", () => {
-      people++;
-      peopleNumEl.textContent = people;
-      budgetAmountEl.textContent = "¥" + (people * 17);
-      updateCartUI();
-    });
-
-    // 分类切换
-    document.getElementById("tabs").addEventListener("click", e => {
-      if (e.target.classList.contains("tab")) {
-        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-        e.target.classList.add("active");
-        renderMenu(e.target.dataset.cat);
-      }
-    });
-
-    // 加减菜
-    menuContainer.addEventListener("click", e => {
-      const btn = e.target.closest(".qty-btn");
-      if (!btn) return;
-      const id = +btn.dataset.id;
-      const act = btn.dataset.act;
-      if (act === "plus") {
-        cart[id] = (cart[id] || 0) + 1;
-      } else {
-        if (cart[id] > 0) cart[id]--;
-        if (cart[id] === 0) delete cart[id];
-      }
-      renderMenu(document.querySelector(".tab.active").dataset.cat);
-      updateCartUI();
-    });
-
-    // ========== 渲染点餐清单 ==========
-    function renderOrderModal() {
-      let total = 0;
-      let html = "";
-      let textLines = [];
-      const budget = people * 17;
-
-      Object.entries(cart).forEach(([id, qty]) => {
-        if (qty > 0) {
-          const dish = menuData.find(d => d.id == id);
-          const sub = dish.price * qty;
-          total += sub;
-          html += `<div class="order-item">
-            <div class="order-item-main"><span>${dish.name} ×${qty}</span><span>¥${sub}</span></div>
-            <button class="btn-remove-item" data-remove-id="${dish.id}">移除</button>
-          </div>`;
-          textLines.push(`${dish.name} ×${qty}  ¥${sub}`);
-        }
-      });
-
-      orderListEl.innerHTML = html || '<div class="empty-tip">还没有选择菜品</div>';
-      modalTotalEl.textContent = "¥" + total;
-
-      const diff = total - budget;
-      let tip = `人数：${people}人 | 预算：¥${budget}`;
-      if (diff > 0) tip += ` | 超出：¥${diff}（现场补齐）`;
-      else if (diff < 0) tip += ` | 剩余：¥${-diff}`;
-      else tip += ` | 刚好预算`;
-      tip += `\n米饭：¥${people}（1元/人，另计）`;
-      modalBudgetTip.textContent = tip;
-
-      // 生成可复制文本
-      const copyStr = `【滋味轩点餐】${people}人
-----------------
-${textLines.join("\n")}
-----------------
-菜品合计：¥${total}
-预算标准：¥${budget}（17×${people}）
-${diff > 0 ? "超出部分：¥" + diff + "（现场补齐）" : diff < 0 ? "剩余预算：¥" + (-diff) : "刚好预算"}
-米饭：¥${people}（另计）
-----------------
-请按此菜单准备，谢谢！`;
-      copyTextEl.textContent = copyStr;
+      toolHint.textContent = `盲盒开出 ${picked.length} 道菜，合计 ¥${sum}`;
     }
 
-    // 打开点菜单
-    btnOrder.addEventListener("click", () => {
+    // 历史记录
+    function loadHistory() {
+      try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]"); } catch { return []; }
+    }
+    function saveHistory() {
+      const items = Object.entries(cart).filter(([,q]) => q > 0).map(([id, qty]) => {
+        const d = menuData.find(x => x.id == id);
+        return { id: +id, name: d.name, price: d.price, qty };
+      });
+      if (!items.length) return;
+      const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+      const record = {
+        id: Date.now(),
+        time: new Date().toLocaleString("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }),
+        people, total, items
+      };
+      let list = loadHistory();
+      list.unshift(record);
+      list = list.slice(0, 8);
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(list));
+    }
+    function renderHistory() {
+      const list = loadHistory();
+      const el = $("historyList");
+      if (!list.length) {
+        el.innerHTML = '<div class="history-empty">暂无历史记录，点完餐后会自动保存</div>';
+        return;
+      }
+      el.innerHTML = list.map(h => `
+        <div class="history-item">
+          <div class="history-info">
+            <div class="h-title">${h.people}人 · ¥${h.total} · ${h.items.length}道</div>
+            <div class="h-meta">${h.time} · ${h.items.slice(0,3).map(i=>i.name).join("、")}${h.items.length>3?"…":""}</div>
+          </div>
+          <button class="btn-reuse" data-hid="${h.id}">复用</button>
+        </div>`).join("");
+    }
+
+    // Events
+    $("btnTaste").addEventListener("click", () => {
+      const show = !tastePanel.classList.contains("show");
+      tastePanel.classList.toggle("show", show);
+      historyPanel.classList.remove("show");
+      $("btnTaste").classList.toggle("active", show);
+      $("btnHistory").classList.remove("active");
+      toolHint.textContent = show ? "选择偏好后列表会自动过滤" : "";
+    });
+    $("btnHistory").addEventListener("click", () => {
+      const show = !historyPanel.classList.contains("show");
+      historyPanel.classList.toggle("show", show);
+      tastePanel.classList.remove("show");
+      $("btnHistory").classList.toggle("active", show);
+      $("btnTaste").classList.remove("active");
+      if (show) renderHistory();
+      toolHint.textContent = show ? "点击「复用」可一键恢复上次点餐" : "";
+    });
+    $("btnBlind").addEventListener("click", () => {
+      tastePanel.classList.remove("show");
+      historyPanel.classList.remove("show");
+      $("btnTaste").classList.remove("active");
+      $("btnHistory").classList.remove("active");
+      blindBox();
+    });
+
+    $("tasteTags").addEventListener("click", e => {
+      const btn = e.target.closest(".taste-tag");
+      if (!btn) return;
+      const t = btn.dataset.taste;
+      if (activeTastes.has(t)) { activeTastes.delete(t); btn.classList.remove("on"); }
+      else { activeTastes.add(t); btn.classList.add("on"); }
+      renderMenu(document.querySelector(".tab.active").dataset.cat);
+    });
+
+    $("historyList").addEventListener("click", e => {
+      const btn = e.target.closest(".btn-reuse");
+      if (!btn) return;
+      const hid = +btn.dataset.hid;
+      const rec = loadHistory().find(h => h.id === hid);
+      if (!rec) return;
+      cart = {};
+      rec.items.forEach(i => { cart[i.id] = i.qty; });
+      people = rec.people;
+      peopleNumEl.textContent = people;
+      budgetAmountEl.textContent = "¥" + people * 17;
+      renderMenu("all");
+      updateCartUI();
+      toolHint.textContent = `已复用 ${rec.time} 的点餐记录`;
+      historyPanel.classList.remove("show");
+      $("btnHistory").classList.remove("active");
+    });
+
+    
+    const searchInput = $("searchInput");
+    const searchWrap = $("searchWrap");
+    const searchClear = $("searchClear");
+    searchInput.addEventListener("input", () => {
+      searchQuery = searchInput.value.trim();
+      searchWrap.classList.toggle("has-value", !!searchQuery);
+      const activeCat = document.querySelector(".tab.active")?.dataset.cat || "all";
+      renderMenu(activeCat);
+    });
+    searchClear.addEventListener("click", () => {
+      searchInput.value = "";
+      searchQuery = "";
+      searchWrap.classList.remove("has-value");
+      searchInput.focus();
+      const activeCat = document.querySelector(".tab.active")?.dataset.cat || "all";
+      renderMenu(activeCat);
+    });
+
+    
+    
+    $("selectedBar").addEventListener("click", () => {
+      if (Object.keys(cart).length === 0) return;
+      saveHistory();
       renderOrderModal();
       modalMask.classList.add("show");
     });
 
-    // 在点餐清单中直接移除整道菜
+    document.getElementById("budgetTip").addEventListener("click", e => {
+      const t = e.target.closest("[data-add-id]");
+      if (!t) return;
+      const id = +t.dataset.addId;
+      cart[id] = (cart[id] || 0) + 1;
+      const activeCat = document.querySelector(".tab.active")?.dataset.cat || "all";
+      renderMenu(activeCat);
+      updateCartUI();
+    });
+
+    $("minusPeople").addEventListener("click", () => {
+      if (people > 1) { people--; peopleNumEl.textContent = people; budgetAmountEl.textContent = "¥" + people * 17; updateCartUI(); }
+    });
+    $("plusPeople").addEventListener("click", () => {
+      people++; peopleNumEl.textContent = people; budgetAmountEl.textContent = "¥" + people * 17; updateCartUI();
+    });
+    $("tabs").addEventListener("click", e => {
+      if (!e.target.classList.contains("tab")) return;
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      e.target.classList.add("active");
+      renderMenu(e.target.dataset.cat);
+    });
+    menuContainer.addEventListener("click", e => {
+      const btn = e.target.closest(".qty-btn");
+      if (!btn) return;
+      const id = +btn.dataset.id;
+      if (btn.dataset.act === "plus") cart[id] = (cart[id] || 0) + 1;
+      else { if (cart[id] > 0) cart[id]--; if (!cart[id]) delete cart[id]; }
+      renderMenu(document.querySelector(".tab.active").dataset.cat);
+      updateCartUI();
+    });
+
+    function renderOrderModal() {
+      let total = 0, html = "", lines = [];
+      const budget = people * 17;
+      Object.entries(cart).forEach(([id, qty]) => {
+        if (qty <= 0) return;
+        const d = menuData.find(x => x.id == id);
+        const sub = d.price * qty; total += sub;
+        html += `<div class="order-item"><div class="order-item-main"><span>${d.name} ×${qty}</span><span>¥${sub}</span></div><button class="btn-remove-item" data-remove-id="${d.id}">移除</button></div>`;
+        lines.push(`${d.name} ×${qty}  ¥${sub}`);
+      });
+      orderListEl.innerHTML = html || '<div class="empty-tip">还没有选择菜品</div>';
+      modalTotalEl.textContent = "¥" + total;
+      const diff = total - budget;
+      let tip = `人数：${people}人 · 预算：¥${budget}`;
+      if (diff > 0) tip += ` · 超出：¥${diff}`;
+      else if (diff < 0) tip += ` · 剩余：¥${-diff}`;
+      else tip += ` · 刚好`;
+      tip += ` · 米饭：¥${people}`;
+      modalBudgetTip.textContent = tip;
+      copyTextEl.textContent = `【滋味轩点餐】${people}人\n----------------\n${lines.join("\n")}\n----------------\n菜品合计：¥${total}\n预算标准：¥${budget}（17×${people}）\n${diff>0?"超出：¥"+diff+"（现场补齐）":diff<0?"剩余：¥"+(-diff):"刚好预算"}\n米饭：¥${people}（另计）\n----------------\n请按此菜单准备，谢谢！`;
+    }
+
+    btnOrder.addEventListener("click", () => {
+      saveHistory();
+      renderOrderModal();
+      modalMask.classList.add("show");
+    });
     orderListEl.addEventListener("click", e => {
       const btn = e.target.closest(".btn-remove-item");
       if (!btn) return;
-      const id = +btn.dataset.removeId;
-      delete cart[id];
+      delete cart[+btn.dataset.removeId];
       renderMenu(document.querySelector(".tab.active").dataset.cat);
       updateCartUI();
       renderOrderModal();
     });
-
-    document.getElementById("modalClose").addEventListener("click", () => {
-      modalMask.classList.remove("show");
-    });
-
-    modalMask.addEventListener("click", e => {
-      if (e.target === modalMask) modalMask.classList.remove("show");
-    });
-
+    $("modalClose").addEventListener("click", () => modalMask.classList.remove("show"));
+    modalMask.addEventListener("click", e => { if (e.target === modalMask) modalMask.classList.remove("show"); });
     btnCopy.addEventListener("click", () => {
       const text = copyTextEl.textContent;
       navigator.clipboard.writeText(text).then(() => {
         btnCopy.textContent = "已复制 ✓";
         setTimeout(() => btnCopy.textContent = "一键复制点菜单", 1500);
       }).catch(() => {
-        // fallback
         const ta = document.createElement("textarea");
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
+        ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta);
         btnCopy.textContent = "已复制 ✓";
         setTimeout(() => btnCopy.textContent = "一键复制点菜单", 1500);
       });
     });
 
-    // 初始化
     renderMenu();
     updateCartUI();
   </script>
