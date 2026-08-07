@@ -29,16 +29,16 @@
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
       --cart-height: 78px;
-      --header-h: calc(76px + var(--safe-top));
+      --shell-pad: 16px;
+      --header-h: 72px; /* 运行时由 JS 按实际顶栏高度覆盖 */
       --selected-h: 0px;
-      --search-h: 54px;
     }
     body.has-selected {
       --selected-h: 52px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html { height: 100%; }
+    html { height: 100%; overflow-x: hidden; }
     body {
       font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
       background:
@@ -49,6 +49,7 @@
       line-height: 1.55;
       padding-bottom: calc(var(--cart-height) + var(--safe-bottom) + 72px);
       min-height: 100%;
+      overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
     }
 
@@ -57,11 +58,13 @@
       width: min(1240px, 100%);
       margin-left: auto;
       margin-right: auto;
-      padding: calc(16px + var(--safe-top)) 20px 14px;
+      padding: calc(14px + var(--safe-top)) 20px 12px;
       text-align: center;
       border-bottom: 8px solid #73191e;
       background: #9f2428;
-      position: sticky; top: 0; z-index: 100;
+      position: sticky;
+      top: 0;
+      z-index: 100;
       box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
       border-radius: 0;
     }
@@ -217,8 +220,9 @@
 
     .budget-tip {
       position: fixed;
-      left: 12px;
-      right: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(1216px, calc(100% - 24px));
       bottom: calc(var(--cart-height) + var(--safe-bottom) + 8px);
       z-index: 190;
       padding: 10px 12px;
@@ -256,13 +260,15 @@
       position: relative;
       width: min(1240px, 100%);
       margin: 0 auto;
-      padding: 0 16px 40px;
+      padding: 0 var(--shell-pad) 48px;
       background:
         linear-gradient(90deg, transparent 0 14%, rgba(130, 94, 65, .025) 14% 14.5%, transparent 14.5% 100%),
         repeating-linear-gradient(0deg, rgba(124, 89, 58, .025) 0 1px, transparent 1px 5px),
         #f4ead8;
       box-shadow: 0 18px 28px rgba(0,0,0,.2);
       color: var(--text);
+      /* 避免 overflow 打断 sticky */
+      overflow: visible;
     }
     .menu-shell::before {
       content: "";
@@ -273,7 +279,8 @@
       pointer-events: none;
       z-index: 0;
     }
-    .menu-shell > * { position: relative; z-index: 1; }
+    /* 仅抬层，禁止写 position，否则会盖掉子元素 sticky */
+    .menu-shell > * { z-index: 1; }
 
     /* Selected sticky bar */
     .selected-bar {
@@ -284,11 +291,13 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      margin: 0 -16px;
-      padding: 10px 16px;
-      background: rgba(247, 239, 223, 0.97);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      /* 用 shell 内边距拉满宽度，避免吸顶后左右露缝 */
+      width: calc(100% + 2 * var(--shell-pad));
+      max-width: none;
+      margin-left: calc(-1 * var(--shell-pad));
+      margin-right: calc(-1 * var(--shell-pad));
+      padding: 10px var(--shell-pad);
+      background: #f4ead8;
       border-bottom: 1px solid var(--paper-line);
       box-shadow: 0 2px 10px rgba(60, 60, 59, 0.1);
       cursor: pointer;
@@ -311,7 +320,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 70vw;
+      max-width: min(70vw, 720px);
     }
     .selected-bar .sel-right {
       display: flex;
@@ -334,23 +343,32 @@
       letter-spacing: 0.5px;
     }
 
-    /* Search — 吸顶保持 */
+    /* Search — 吸顶：不透明底 + 正确定位图标，避免滚动透出/错位 */
     .search-wrap {
       position: sticky;
       top: calc(var(--header-h) + var(--selected-h));
       z-index: 97;
-      margin: 0 -16px;
-      padding: 10px 16px 8px;
-      background: rgba(244, 234, 216, 0.97);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      width: calc(100% + 2 * var(--shell-pad));
+      margin-left: calc(-1 * var(--shell-pad));
+      margin-right: calc(-1 * var(--shell-pad));
+      margin-top: 8px;
+      padding: 10px var(--shell-pad) 10px;
+      background: #f4ead8;
       border-bottom: 1px solid var(--paper-line);
-      box-shadow: 0 2px 8px rgba(60, 60, 59, 0.06);
+      box-shadow: 0 2px 8px rgba(60, 60, 59, 0.08);
+      /* 作为图标/清除按钮的定位上下文 */
+      isolation: isolate;
+    }
+    .search-wrap .search-field {
+      position: relative;
+      width: 100%;
     }
     .search-wrap input {
+      display: block;
       width: 100%;
-      padding: 11px 14px 11px 38px;
-      background: rgba(255, 251, 242, 0.92);
+      height: 42px;
+      padding: 0 40px 0 38px;
+      background: #fffbf2;
       border: 1px solid #cdb79b;
       border-radius: 2px;
       color: var(--text);
@@ -358,6 +376,13 @@
       font-family: inherit;
       outline: none;
       letter-spacing: 0.3px;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .search-wrap input::-webkit-search-decoration,
+    .search-wrap input::-webkit-search-cancel-button {
+      -webkit-appearance: none;
+      appearance: none;
     }
     .search-wrap input::placeholder {
       color: var(--muted);
@@ -369,28 +394,35 @@
     }
     .search-wrap .search-icon {
       position: absolute;
-      left: 28px;
-      top: 50%;
-      transform: translateY(-50%);
+      left: 12px;
+      top: 0;
+      bottom: 0;
+      width: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: var(--muted);
       font-size: 14px;
       pointer-events: none;
+      line-height: 1;
     }
     .search-wrap .search-clear {
       position: absolute;
-      right: 26px;
+      right: 8px;
       top: 50%;
       transform: translateY(-50%);
-      width: 22px;
-      height: 22px;
+      width: 28px;
+      height: 28px;
       border: none;
       background: transparent;
       color: var(--muted);
-      font-size: 16px;
+      font-size: 18px;
       cursor: pointer;
       display: none;
       align-items: center;
       justify-content: center;
+      line-height: 1;
+      padding: 0;
     }
     .search-wrap.has-value .search-clear {
       display: flex;
@@ -561,11 +593,13 @@
     .cart-bar {
       position: fixed;
       bottom: 0;
-      left: 0;
-      right: 0;
+      left: 50%;
+      right: auto;
+      transform: translateX(-50%);
+      width: min(1240px, 100%);
       background: #791a20;
       border-top: 3px solid #d5ac7f;
-      padding: 12px 16px calc(12px + var(--safe-bottom));
+      padding: 12px 20px calc(12px + var(--safe-bottom));
       display: flex;
       align-items: center;
       gap: 12px;
@@ -608,21 +642,86 @@
 
     /* 手机：整页纸质底，去掉外层深灰 */
     @media (max-width: 700px) {
+      :root { --shell-pad: 16px; }
       body { background: #f4ead8; }
+      .header {
+        width: 100%;
+        border-radius: 0;
+        box-shadow: 0 6px 15px rgba(82, 24, 19, .18);
+      }
+      .header h1 {
+        font-size: 24px;
+        letter-spacing: 0.22em;
+        text-indent: 0.22em;
+      }
       .menu-shell {
         box-shadow: none;
         width: 100%;
       }
       .menu-shell::before { display: none; }
-      .header {
-        box-shadow: 0 6px 15px rgba(82, 24, 19, .18);
-      }
       .recommend-bar {
         align-items: stretch;
         flex-direction: column;
         gap: 10px;
       }
       .btn-recommend { width: 100%; }
+      .cart-bar {
+        width: 100%;
+        border-radius: 0;
+      }
+    }
+
+    /* 平板 / 电脑：写真菜单双列与更宽内边距 */
+    @media (min-width: 701px) {
+      :root { --shell-pad: 28px; }
+      body {
+        padding-top: 20px;
+        padding-bottom: calc(var(--cart-height) + var(--safe-bottom) + 32px);
+      }
+      .header {
+        margin-top: 0;
+        border-radius: 3px 3px 0 0;
+        padding-left: 28px;
+        padding-right: 28px;
+      }
+      .header h1 {
+        font-size: clamp(28px, 3.2vw, 42px);
+        letter-spacing: 0.28em;
+        text-indent: 0.28em;
+      }
+      .menu-shell {
+        padding-bottom: 56px;
+        border-radius: 0 0 3px 3px;
+      }
+      .dish-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0 24px;
+      }
+      #menuContainer {
+        gap: 22px;
+      }
+      .section {
+        padding: 0 8px 12px;
+      }
+      .cart-bar {
+        border-radius: 8px 8px 0 0;
+      }
+    }
+
+    @media (min-width: 1100px) {
+      :root { --shell-pad: 38px; }
+      .header,
+      .menu-shell,
+      .cart-bar {
+        width: min(1240px, calc(100vw - 48px));
+      }
+      .header h1 {
+        font-size: 40px;
+      }
+      .dish-list {
+        gap: 0 28px;
+      }
     }
 
     /* Modal */
@@ -749,9 +848,11 @@
 
 
   <div class="search-wrap" id="searchWrap">
-    <span class="search-icon">⌕</span>
-    <input type="search" id="searchInput" placeholder="搜索菜名 / 拼音首字母…" autocomplete="off" enterkeyhint="search" />
-    <button type="button" class="search-clear" id="searchClear" aria-label="清除">×</button>
+    <div class="search-field">
+      <span class="search-icon" aria-hidden="true">⌕</span>
+      <input type="search" id="searchInput" placeholder="搜索菜名 / 拼音首字母…" autocomplete="off" enterkeyhint="search" />
+      <button type="button" class="search-clear" id="searchClear" aria-label="清除">×</button>
+    </div>
   </div>
 
   <div class="tabs" id="tabs">
@@ -936,6 +1037,25 @@
     let searchQuery = "";
 
     const $ = id => document.getElementById(id);
+
+    // 吸顶偏移：按顶栏 / 已选条真实高度写入 CSS 变量，避免写死像素错位
+    function syncStickyOffsets() {
+      const header = document.querySelector(".header");
+      const selected = $("selectedBar");
+      if (header) {
+        document.documentElement.style.setProperty("--header-h", header.offsetHeight + "px");
+      }
+      if (selected && selected.classList.contains("show")) {
+        document.documentElement.style.setProperty("--selected-h", selected.offsetHeight + "px");
+        document.body.classList.add("has-selected");
+      } else {
+        document.documentElement.style.setProperty("--selected-h", "0px");
+        document.body.classList.remove("has-selected");
+      }
+    }
+    window.addEventListener("resize", syncStickyOffsets);
+    window.addEventListener("orientationchange", syncStickyOffsets);
+
     const peopleNumEl = $("peopleNum"), budgetAmountEl = $("budgetAmount");
     const menuContainer = $("menuContainer"), cartTotalEl = $("cartTotal");
     const cartCountEl = $("cartCount"), diffTagEl = $("diffTag");
@@ -1096,10 +1216,8 @@
       const selPrice = $("selPrice");
       if (count === 0) {
         selectedBar.classList.remove("show");
-        document.body.classList.remove("has-selected");
       } else {
         selectedBar.classList.add("show");
-        document.body.classList.add("has-selected");
         selCount.textContent = `已选 ${count} 道`;
         selPrice.textContent = `¥${total}`;
         const names = Object.entries(cart)
@@ -1110,7 +1228,8 @@
           });
         selNames.textContent = names.join("、");
       }
-
+      // 已选条显示状态变化后，重算搜索吸顶 top
+      requestAnimationFrame(syncStickyOffsets);
     }
 
     // 盲盒随机（预算附近）
@@ -1507,6 +1626,7 @@
 
     renderMenu();
     updateCartUI();
+    syncStickyOffsets();
   </script>
 </body>
 </html>
