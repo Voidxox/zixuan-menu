@@ -1223,18 +1223,26 @@
         const FIREBASE_DEFAULT = {
       apiKey: "AIzaSyAByiBey8_Hrqyrdn8SMnU_cx5vxHmoYCo",
       authDomain: "ziweixuan.firebaseapp.com",
-      databaseURL: "https://ziweixuan-default-rtdb.firebaseio.com",
+      databaseURL: "https://ziweixuan-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "ziweixuan",
       storageBucket: "ziweixuan.firebasestorage.app",
       messagingSenderId: "659226341305",
       appId: "1:659226341305:web:94bbce8513b1d6a4f49068"
     };
     function loadFirebaseConfig() {
+      const base = Object.assign({}, FIREBASE_DEFAULT);
       try {
         const raw = localStorage.getItem("zixuan_firebase");
-        if (raw) return Object.assign({}, FIREBASE_DEFAULT, JSON.parse(raw));
+        if (!raw) return base;
+        const extra = JSON.parse(raw) || {};
+        // 仅用非空字段覆盖，避免本机旧空配置把默认值冲掉
+        Object.keys(extra).forEach(k => {
+          if (extra[k] !== undefined && extra[k] !== null && String(extra[k]).trim() !== "") {
+            base[k] = extra[k];
+          }
+        });
       } catch (_) {}
-      return Object.assign({}, FIREBASE_DEFAULT);
+      return base;
     }
     const FIREBASE_CONFIG = loadFirebaseConfig();
     const ROOM_TTL_MS = 24 * 60 * 60 * 1000;
@@ -1260,9 +1268,15 @@
         toolHint.textContent = "Firebase SDK 未加载，请检查网络";
         return false;
       }
-      if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
-      fbDb = firebase.database();
-      return true;
+      try {
+        if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+        fbDb = firebase.database();
+        return true;
+      } catch (e) {
+        console.error(e);
+        toolHint.textContent = "Firebase 初始化失败：" + (e && e.message ? e.message : e);
+        return false;
+      }
     }
     function getMemberId() {
       let id = localStorage.getItem(MEMBER_KEY);
@@ -1466,12 +1480,16 @@
     }
 
     async function createRoom() {
+      const btn = $("btnCollabCreate");
       if (!ensureFirebase()) {
-        alert("请先配置 Firebase 才能创建房间。\n\n控制台配置示例：\nlocalStorage.setItem('zixuan_firebase', JSON.stringify({\n  apiKey: '...',\n  authDomain: '...',\n  databaseURL: 'https://xxx.firebaseio.com',\n  projectId: '...',\n  appId: '...'\n}));\nlocation.reload();\n\n部署时请把同一配置写入页面中的 FIREBASE_DEFAULT，并发布 Realtime Database 规则（见仓库 firebase-database.rules.json）。");
+        alert("Firebase 未就绪。请确认 Web 配置与 databaseURL 正确。");
         return;
       }
       const nick = await promptNickname(false);
-      if (!nick) return;
+      if (!nick) {
+        toolHint.textContent = "需要填写昵称才能创建房间";
+        return;
+      }
       setNickname(nick);
       const id = genRoomId();
       const memberId = getMemberId();
@@ -1481,26 +1499,51 @@
       Object.entries(cart).forEach(([dishId, qty]) => {
         if (qty > 0) cartNode[dishId] = { qty, lastBy: nick, updatedAt: t };
       });
-      await fbDb.ref(`rooms/${id}`).set({
-        meta: {
-          createdAt: t,
-          updatedAt: t,
-          expiresAt: touchExpires(),
-          people,
-          status: "active",
-          createdBy: nick
-        },
-        members: {
-          [memberId]: { name: nick, joinedAt: t, lastSeenAt: t }
-        },
-        cart: cartNode
-      });
-      await joinRoom(id, { forceNick: false });
+      const prevLabel = btn ? btn.textContent : "";
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = "创建中…";
+      }
+      toolHint.textContent = "正在创建房间…";
       try {
-        await navigator.clipboard.writeText(roomLink(id));
-        toolHint.textContent = `房间已创建，链接已复制，发给同伴即可一起点`;
-      } catch (_) {
-        toolHint.textContent = `房间已创建，请点「复制链接」发给同伴`;
+        await fbDb.ref(`rooms/${id}`).set({
+          meta: {
+            createdAt: t,
+            updatedAt: t,
+            expiresAt: touchExpires(),
+            people,
+            status: "active",
+            createdBy: nick
+          },
+          members: {
+            [memberId]: { name: nick, joinedAt: t, lastSeenAt: t }
+          },
+          cart: cartNode
+        });
+        await joinRoom(id, { forceNick: false });
+        try {
+          await navigator.clipboard.writeText(roomLink(id));
+          toolHint.textContent = `房间已创建，链接已复制，发给同伴即可一起点`;
+        } catch (_) {
+          toolHint.textContent = `房间已创建，请点「复制链接」发给同伴`;
+        }
+      } catch (e) {
+        console.error("createRoom failed", e);
+        const code = (e && (e.code || e.message)) || String(e);
+        let tip = "创建房间失败：" + code;
+        if (String(code).includes("PERMISSION_DENIED") || String(code).includes("permission_denied")) {
+          tip = "创建失败：权限被拒。请到 Firebase 控制台 → Realtime Database → 规则，发布允许 rooms 读写的规则后重试。";
+        } else if (String(code).includes("404") || String(code).toLowerCase().includes("not found")) {
+          tip = "创建失败：数据库地址不正确。请核对 databaseURL 是否与控制台顶部一致。";
+        }
+        toolHint.textContent = tip;
+        alert(tip);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = prevLabel || "创建房间";
+        }
+        updateCollabUI();
       }
     }
 
@@ -2184,14 +2227,32 @@
     });
 
     // 协同 UI 事件
-    $("btnCollabCreate").addEventListener("click", () => {
+        $("btnCollabCreate").addEventListener("click", () => {
       if (!firebaseConfigured()) {
-        alert("【多人点餐 · Firebase 配置】\n\n1. Firebase 控制台新建项目\n2. 构建 → Realtime Database → 创建（测试模式可先用，再贴 rules）\n3. 项目设置 → 你的应用 → 网页应用，复制配置\n4. 本机调试可在控制台执行：\nlocalStorage.setItem('zixuan_firebase', JSON.stringify({apiKey,authDomain,databaseURL,projectId,appId})); location.reload();\n5. 正式环境：把配置写入页面 FIREBASE_DEFAULT 并部署\n6. 规则粘贴仓库中的 firebase-database.rules.json\n\n单人点餐无需配置，可直接使用。");
+        alert("Firebase 未配置完整（缺少 apiKey / databaseURL / projectId）。");
         return;
       }
-      createRoom();
+      // 清理可能冲掉正确 databaseURL 的本机旧配置
+      try {
+        const raw = localStorage.getItem("zixuan_firebase");
+        if (raw) {
+          const o = JSON.parse(raw);
+          if (o && o.databaseURL && o.databaseURL.indexOf("firebaseio.com") !== -1 && !o.databaseURL.includes("asia-southeast1")) {
+            delete o.databaseURL;
+            localStorage.setItem("zixuan_firebase", JSON.stringify(o));
+            location.reload();
+            return;
+          }
+        }
+      } catch (_) {}
+      createRoom().catch(err => {
+        console.error(err);
+        const msg = (err && err.message) ? err.message : String(err);
+        toolHint.textContent = "创建房间异常：" + msg;
+        alert("创建房间异常：" + msg);
+      });
     });
-    $("btnCollabCopy").addEventListener("click", async () => {
+$("btnCollabCopy").addEventListener("click", async () => {
       if (!collabRoomId) return;
       const link = roomLink(collabRoomId);
       try {
