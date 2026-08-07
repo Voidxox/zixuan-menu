@@ -107,6 +107,50 @@
     }
     .budget-info .hint { font-size: 10px; color: var(--muted); margin-top: 2px; }
 
+    /* 按已选菜品一键补齐 */
+    .recommend-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 12px 0 0;
+      padding: 12px 14px;
+      border: 1px solid #cdb79b;
+      border-left: 4px solid var(--gold);
+      border-radius: 2px;
+      background: rgba(255, 251, 242, .72);
+      box-shadow: 0 2px 0 rgba(116, 72, 37, .06);
+    }
+    .recommend-copy { min-width: 0; }
+    .recommend-title {
+      color: var(--gold);
+      font-family: "Noto Serif SC", serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+    .recommend-hint {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .btn-recommend {
+      flex: 0 0 auto;
+      min-width: 132px;
+      padding: 11px 14px;
+      border: 0;
+      border-radius: 2px;
+      background: var(--gold);
+      color: #fff8ed;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+    }
+    .btn-recommend:active { background: #64151a; }
+    .btn-recommend.done { background: var(--success); }
+
     /* Tools row */
     .tools {
       margin: 12px 0 0; display: flex; flex-direction: column; gap: 10px;
@@ -573,6 +617,12 @@
       .header {
         box-shadow: 0 6px 15px rgba(82, 24, 19, .18);
       }
+      .recommend-bar {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .btn-recommend { width: 100%; }
     }
 
     /* Modal */
@@ -664,6 +714,14 @@
     </div>
   </div>
 
+  <div class="recommend-bar" id="recommendBar">
+    <div class="recommend-copy">
+      <div class="recommend-title">按已选菜品一键补齐</div>
+      <div class="recommend-hint" id="recommendHint">保留已选菜品，优先补充特色和家常小炒大菜，尽量贴近预算</div>
+    </div>
+    <button class="btn-recommend" id="btnRecommend">一键补齐菜品</button>
+  </div>
+
   <div class="tools">
     <div class="tool-row">
       <button class="btn-tool" id="btnTaste">口味过滤</button>
@@ -705,7 +763,7 @@
     <div class="tab" data-cat="jiushui">酒水</div>
   </div>
 
-  <div class="note">规则：人数×17元点菜，超出现场补齐。10:00–10:30点餐。点完可一键复制发给老板。</div>
+  <div class="note">规则：人数×17元点菜，超出现场补齐。10:00–10:30点餐。可先手动点确定的菜，再点「一键补齐菜品」：保留已选，优先补特色/小炒大菜，总价最多上浮¥17；汤类、花生米、水饺、锅盔、红糖糍粑及酒水不参与自动补齐。点完可一键复制发给老板。</div>
   <div id="menuContainer"></div>
   </div><!-- /.menu-shell -->
 
@@ -886,6 +944,17 @@
     const modalBudgetTip = $("modalBudgetTip"), copyTextEl = $("copyText");
     const btnCopy = $("btnCopy"), toolHint = $("toolHint");
     const tastePanel = $("tastePanel"), historyPanel = $("historyPanel");
+    const btnRecommend = $("btnRecommend"), recommendHintEl = $("recommendHint");
+
+    function getBudget() { return people * 17; }
+    function getDefaultRecommendationHint() {
+      return "保留已选菜品，优先补充特色和家常小炒大菜，尽量贴近预算";
+    }
+    function resetRecommendUI() {
+      recommendHintEl.textContent = getDefaultRecommendationHint();
+      btnRecommend.textContent = "一键补齐菜品";
+      btnRecommend.classList.remove("done");
+    }
 
     function matchTaste(dish) {
       if (activeTastes.size === 0) return true;
@@ -1077,6 +1146,116 @@
       toolHint.textContent = `盲盒开出 ${picked.length} 道菜，合计 ¥${sum}`;
     }
 
+    // ========== 按已选菜品一键补齐 ==========
+    // 业务：保留购物车已有菜品只追加；总价最多上浮 ¥17；优先特色/小炒大菜；汤酒水及部分小食不参与自动补齐。
+    function getCartSummary() {
+      return Object.entries(cart).reduce((summary, [id, qty]) => {
+        const dish = menuData.find(item => item.id == id);
+        if (dish && qty > 0) {
+          summary.total += dish.price * qty;
+          summary.count += qty;
+          summary.ids.add(dish.id);
+        }
+        return summary;
+      }, { total: 0, count: 0, ids: new Set() });
+    }
+
+    function buildCompletion() {
+      const budget = getBudget();
+      const upperLimit = budget + 17;
+      const current = getCartSummary();
+      const smallGroup = people <= 4;
+      // 花生米类、红糖糍粑、锅盔、水饺、部分汤品不参与自动补齐
+      const excludedIds = new Set([10, 14, 30, 97, 98, 108, 109]);
+      const recommendationCats = ["liangcai", "xiaochao", "tese"];
+      const catBits = Object.fromEntries(recommendationCats.map((cat, index) => [cat, 1 << index]));
+      const dishById = Object.fromEntries(menuData.map(dish => [dish.id, dish]));
+
+      if (current.total > upperLimit) return { reason: "over-limit", current, total: current.total, dishes: [] };
+      if (current.total >= budget) return { reason: "already-covered", current, total: current.total, dishes: [] };
+
+      const candidateLimit = upperLimit - current.total;
+      const isBigDish = dish => dish && (dish.cat === "xiaochao" || dish.cat === "tese") && dish.price >= 38;
+      const isMainDish = dish => dish && (dish.cat === "xiaochao" || dish.cat === "tese") && dish.price >= 20;
+      const candidates = menuData
+        .filter(dish => recommendationCats.includes(dish.cat)
+          && !current.ids.has(dish.id)
+          && !excludedIds.has(dish.id)
+          && dish.price <= candidateLimit
+          && matchTaste(dish)
+          && (!smallGroup || !new Set([30, 97, 98]).has(dish.id)));
+
+      for (let i = candidates.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
+      }
+
+      const maxPerCategory = Math.max(2, Math.ceil(people / 5));
+      let states = [{ sum: 0, ids: [], mask: 0, counts: {}, randomness: Math.random(), randomSlot: Math.floor(Math.random() * 4) }];
+
+      const stateScore = state => {
+        const finalTotal = current.total + state.sum;
+        const gap = Math.abs(budget - finalTotal);
+        const excess = Math.max(0, finalTotal - budget);
+        const categoryCount = Object.keys(state.counts).length;
+        const bigDishCount = state.ids.reduce((count, id) => count + (isBigDish(dishById[id]) ? 1 : 0), 0);
+        const bigDishValue = state.ids.reduce((sum, id) => sum + (isBigDish(dishById[id]) ? dishById[id].price : 0), 0);
+        const mainValue = state.ids.reduce((sum, id) => sum + (isMainDish(dishById[id]) ? dishById[id].price : 0), 0);
+        return (finalTotal >= budget ? 1600 : 0)
+          + bigDishCount * 260
+          + bigDishValue * 14
+          + mainValue * 9
+          + categoryCount * 50
+          - gap * 14
+          - excess * 6
+          + (state.randomness || 0) * 60;
+      };
+
+      candidates.forEach(dish => {
+        const additions = [];
+        states.forEach(state => {
+          const nextSum = state.sum + dish.price;
+          if (nextSum > candidateLimit) return;
+          if ((state.counts[dish.cat] || 0) >= maxPerCategory) return;
+          const counts = { ...state.counts, [dish.cat]: (state.counts[dish.cat] || 0) + 1 };
+          additions.push({
+            sum: nextSum,
+            ids: state.ids.concat(dish.id),
+            mask: state.mask | (catBits[dish.cat] || 0),
+            counts,
+            randomness: Math.random(),
+            randomSlot: Math.floor(Math.random() * 4)
+          });
+        });
+
+        const bestByShape = new Map();
+        states.concat(additions).forEach(state => {
+          const key = `${state.sum}|${state.mask}|${state.ids.length}|${state.randomSlot}`;
+          const existing = bestByShape.get(key);
+          if (!existing || stateScore(state) > stateScore(existing)) bestByShape.set(key, state);
+        });
+        states = [...bestByShape.values()]
+          .sort((a, b) => stateScore(b) - stateScore(a))
+          .slice(0, 2600);
+      });
+
+      const workable = states.filter(state => state.ids.length > 0);
+      const reachesBudget = workable.filter(state => current.total + state.sum >= budget);
+      const pool = (reachesBudget.length ? reachesBudget : workable)
+        .sort((a, b) => stateScore(b) - stateScore(a))
+        .slice(0, 12);
+      const selected = pool.length
+        ? pool[Math.floor(Math.random() * pool.length)]
+        : { sum: 0, ids: [] };
+
+      return {
+        reason: selected.ids.length ? "completed" : "no-candidate",
+        current,
+        total: current.total + selected.sum,
+        dishes: selected.ids.map(id => dishById[id]).filter(Boolean)
+      };
+    }
+
     // 历史记录
     function loadHistory() {
       try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]"); } catch { return []; }
@@ -1206,11 +1385,59 @@
       updateCartUI();
     });
 
+    btnRecommend.addEventListener("click", () => {
+      // 点击一键补齐：在已选基础上追加菜品，尽量贴近人数×17 预算
+      const result = buildCompletion();
+      const budget = getBudget();
+
+      if (result.reason === "over-limit") {
+        recommendHintEl.textContent = `当前已选 ¥${result.total}，已超出建议上限 ¥${budget + 17}，请先手动调整菜品`;
+        return;
+      }
+      if (result.reason === "already-covered") {
+        recommendHintEl.textContent = `当前已选 ¥${result.total}，已达到 ¥${budget} 菜品预算，无需再补齐`;
+        return;
+      }
+      if (result.reason === "no-candidate") {
+        recommendHintEl.textContent = "当前剩余预算不足以补充合适菜品，请手动调整人数或菜品";
+        return;
+      }
+
+      result.dishes.forEach(dish => { cart[dish.id] = 1; });
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+      document.querySelector('.tab[data-cat="all"]').classList.add("active");
+      renderMenu("all");
+      updateCartUI();
+
+      const diff = result.total - budget;
+      const budgetStatus = diff > 0 ? `上浮 ¥${diff}` : diff < 0 ? `剩余 ¥${-diff}` : "刚好预算";
+      const retained = result.current.count
+        ? `已保留 ${result.current.count} 道已选菜`
+        : "已从空菜单生成推荐";
+      recommendHintEl.textContent = `${retained}，本次补充 ${result.dishes.length} 道菜，合计 ¥${result.total}（预算 ¥${budget}，${budgetStatus}）；优先补充特色和家常小炒大菜`;
+      btnRecommend.textContent = "已补齐 ✓";
+      btnRecommend.classList.add("done");
+      setTimeout(() => {
+        btnRecommend.textContent = "一键补齐菜品";
+        btnRecommend.classList.remove("done");
+      }, 1800);
+    });
+
     $("minusPeople").addEventListener("click", () => {
-      if (people > 1) { people--; peopleNumEl.textContent = people; budgetAmountEl.textContent = "¥" + people * 17; updateCartUI(); }
+      if (people > 1) {
+        people--;
+        peopleNumEl.textContent = people;
+        budgetAmountEl.textContent = "¥" + people * 17;
+        resetRecommendUI();
+        updateCartUI();
+      }
     });
     $("plusPeople").addEventListener("click", () => {
-      people++; peopleNumEl.textContent = people; budgetAmountEl.textContent = "¥" + people * 17; updateCartUI();
+      people++;
+      peopleNumEl.textContent = people;
+      budgetAmountEl.textContent = "¥" + people * 17;
+      resetRecommendUI();
+      updateCartUI();
     });
     $("tabs").addEventListener("click", e => {
       if (!e.target.classList.contains("tab")) return;
