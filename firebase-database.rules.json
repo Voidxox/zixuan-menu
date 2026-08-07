@@ -1,0 +1,23 @@
+{
+  "rules": {
+    "rooms": {
+      "$roomId": {
+        ".read": true,
+        ".write": true,
+        "meta": {
+          ".validate": "newData.hasChildren(['status', 'people', 'updatedAt', 'expiresAt']) && newData.child('people').isNumber() && newData.child('people').val() >= 1 && newData.child('people').val() <= 100"
+        },
+        "cart": {
+          "$dishId": {
+            ".validate": "newData.hasChildren(['qty', 'lastBy', 'updatedAt']) && newData.child('qty').isNumber() && newData.child('qty').val() > 0 && newData.child('qty').val() <= 99 && newData.child('lastBy').isString() && newData.child('lastBy').val().length > 0 && newData.child('lastBy').val().length <= 20"
+          }
+        },
+        "members": {
+          "$memberId": {
+            ".validate": "newData.hasChildren(['name', 'joinedAt']) && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 20"
+          }
+        }
+      }
+    }
+  }
+}

@@ -154,6 +154,120 @@
     .btn-recommend:active { background: #64151a; }
     .btn-recommend.done { background: var(--success); }
 
+    /* 多人协同 */
+    .collab-bar {
+      margin: 12px 0 0;
+      padding: 12px 14px;
+      border: 1px solid #cdb79b;
+      border-left: 4px solid var(--gold);
+      background: rgba(255, 251, 242, .85);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+    .collab-bar .collab-title {
+      font-family: "Noto Serif SC", serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: .06em;
+      width: 100%;
+    }
+    .collab-bar .collab-meta {
+      flex: 1;
+      min-width: 140px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.45;
+    }
+    .collab-bar .collab-meta strong { color: var(--gold); }
+    .collab-bar .collab-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .btn-collab {
+      padding: 8px 12px;
+      border: 1px solid var(--gold);
+      background: var(--gold);
+      color: #fff8ed;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 2px;
+      letter-spacing: .5px;
+    }
+    .btn-collab.ghost {
+      background: transparent;
+      color: var(--gold);
+    }
+    .btn-collab:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+    .btn-collab.danger {
+      border-color: #a85a4c;
+      background: transparent;
+      color: #a85a4c;
+    }
+    .dish-by {
+      margin-top: 2px;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: .3px;
+    }
+    .collab-modal-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(60, 60, 59, .5);
+      z-index: 320;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .collab-modal-mask.show { display: flex; }
+    .collab-modal {
+      width: min(400px, 100%);
+      background: #f7efdf;
+      border: 1px solid #cdb79b;
+      border-radius: 4px;
+      padding: 20px 18px;
+      box-shadow: 0 12px 32px rgba(0,0,0,.2);
+    }
+    .collab-modal h3 {
+      font-family: "Noto Serif SC", serif;
+      color: var(--gold);
+      font-size: 16px;
+      letter-spacing: .1em;
+      margin-bottom: 8px;
+    }
+    .collab-modal p {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 12px;
+    }
+    .collab-modal input {
+      width: 100%;
+      height: 42px;
+      padding: 0 12px;
+      border: 1px solid #cdb79b;
+      background: #fffbf2;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text);
+      outline: none;
+      margin-bottom: 14px;
+    }
+    .collab-modal input:focus { border-color: var(--gold); }
+    .collab-modal .row {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
     /* Tools row */
     .tools {
       margin: 12px 0 0; display: flex; flex-direction: column; gap: 10px;
@@ -813,6 +927,17 @@
     </div>
   </div>
 
+  <div class="collab-bar" id="collabBar">
+    <div class="collab-title">多人一起点</div>
+    <div class="collab-meta" id="collabMeta">单人模式。创建房间后分享链接，同伴可实时同步同一份购物车。</div>
+    <div class="collab-actions" id="collabActions">
+      <button type="button" class="btn-collab" id="btnCollabCreate">创建房间</button>
+      <button type="button" class="btn-collab ghost hidden" id="btnCollabCopy">复制链接</button>
+      <button type="button" class="btn-collab ghost hidden" id="btnCollabNick">改昵称</button>
+      <button type="button" class="btn-collab danger hidden" id="btnCollabEnd">结束点餐</button>
+    </div>
+  </div>
+
   <div class="recommend-bar" id="recommendBar">
     <div class="recommend-copy">
       <div class="recommend-title">按已选菜品一键补齐</div>
@@ -864,11 +989,23 @@
     <div class="tab" data-cat="jiushui">酒水</div>
   </div>
 
-  <div class="note">规则：人数×17元点菜，超出现场补齐。10:00–10:30点餐。可先手动点确定的菜，再点「一键补齐菜品」：保留已选，优先补特色/小炒大菜，总价最多上浮¥17；汤类、花生米、水饺、锅盔、红糖糍粑及酒水不参与自动补齐。点完可一键复制发给老板。</div>
+  <div class="note">规则：人数×17元点菜，超出现场补齐。10:00–10:30点餐。可「创建房间」分享链接多人协同点同一份单。可先手动点确定的菜，再「一键补齐」：保留已选，优先补特色/小炒大菜，总价最多上浮¥17。点完可一键复制发给老板。</div>
   <div id="menuContainer"></div>
   </div><!-- /.menu-shell -->
 
   <div class="budget-tip" id="budgetTip"></div>
+
+  <div class="collab-modal-mask" id="nickModalMask">
+    <div class="collab-modal">
+      <h3>你的昵称</h3>
+      <p>协同点餐时，其他人会看到你操作过的菜品旁显示此昵称。</p>
+      <input id="nickInput" type="text" maxlength="12" placeholder="例如：小王" autocomplete="nickname" />
+      <div class="row">
+        <button type="button" class="btn-collab ghost" id="btnNickCancel">取消</button>
+        <button type="button" class="btn-collab" id="btnNickOk">确定</button>
+      </div>
+    </div>
+  </div>
 
   <div class="cart-bar">
     <div class="cart-summary">
@@ -895,6 +1032,8 @@
     </div>
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
   <script>
     // 菜品数据 + 口味标签
     const menuData = [
@@ -1076,6 +1215,385 @@
       btnRecommend.classList.remove("done");
     }
 
+    // ========== 多人协同（Firebase Realtime Database）==========
+    // 配置：把下方替换为 Firebase 控制台 Web 应用配置后重新部署。
+    // 也可在浏览器控制台执行：
+    // localStorage.setItem('zixuan_firebase', JSON.stringify({ apiKey, authDomain, databaseURL, projectId, appId }))
+    // 然后刷新页面。
+    const FIREBASE_DEFAULT = {
+      apiKey: "",
+      authDomain: "",
+      databaseURL: "",
+      projectId: "",
+      storageBucket: "",
+      messagingSenderId: "",
+      appId: ""
+    };
+    function loadFirebaseConfig() {
+      try {
+        const raw = localStorage.getItem("zixuan_firebase");
+        if (raw) return Object.assign({}, FIREBASE_DEFAULT, JSON.parse(raw));
+      } catch (_) {}
+      return Object.assign({}, FIREBASE_DEFAULT);
+    }
+    const FIREBASE_CONFIG = loadFirebaseConfig();
+    const ROOM_TTL_MS = 24 * 60 * 60 * 1000;
+    const MEMBER_KEY = "zixuan_member_id";
+    const NICK_KEY = "zixuan_nickname";
+
+    let collabRoomId = null;
+    let collabActive = false;
+    let cartMeta = {}; // dishId -> { lastBy }
+    let fbDb = null;
+    let roomRef = null;
+    let roomListener = null;
+    let applyingRemote = false;
+    let nickResolver = null;
+
+    function firebaseConfigured() {
+      return !!(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.databaseURL && FIREBASE_CONFIG.projectId);
+    }
+    function ensureFirebase() {
+      if (fbDb) return true;
+      if (!firebaseConfigured()) return false;
+      if (typeof firebase === "undefined") {
+        toolHint.textContent = "Firebase SDK 未加载，请检查网络";
+        return false;
+      }
+      if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+      fbDb = firebase.database();
+      return true;
+    }
+    function getMemberId() {
+      let id = localStorage.getItem(MEMBER_KEY);
+      if (!id) {
+        id = "m_" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+        localStorage.setItem(MEMBER_KEY, id);
+      }
+      return id;
+    }
+    function getNickname() {
+      return (localStorage.getItem(NICK_KEY) || "").trim();
+    }
+    function setNickname(name) {
+      localStorage.setItem(NICK_KEY, name.trim().slice(0, 12));
+    }
+    function genRoomId() {
+      const chars = "abcdefghjkmnpqrstuvwxyz23456789";
+      let s = "";
+      for (let i = 0; i < 10; i++) s += chars[Math.floor(Math.random() * chars.length)];
+      return s;
+    }
+    function roomLink(id) {
+      const u = new URL(location.href);
+      u.searchParams.set("room", id);
+      return u.toString();
+    }
+    function now() { return Date.now(); }
+    function touchExpires() { return now() + ROOM_TTL_MS; }
+
+    function updateCollabUI() {
+      const meta = $("collabMeta");
+      const btnCreate = $("btnCollabCreate");
+      const btnCopy = $("btnCollabCopy");
+      const btnNick = $("btnCollabNick");
+      const btnEnd = $("btnCollabEnd");
+      if (!firebaseConfigured()) {
+        meta.innerHTML = "协同未启用：请先在页面配置 Firebase（见说明），或控制台写入 <code>zixuan_firebase</code>。单人点餐不受影响。";
+        btnCreate.textContent = "配置说明";
+        btnCreate.classList.remove("hidden");
+        btnCopy.classList.add("hidden");
+        btnNick.classList.add("hidden");
+        btnEnd.classList.add("hidden");
+        return;
+      }
+      if (!collabActive) {
+        meta.textContent = "单人模式。点「创建房间」生成分享链接，同伴打开后实时同步购物车。";
+        btnCreate.textContent = "创建房间";
+        btnCreate.classList.remove("hidden");
+        btnCopy.classList.add("hidden");
+        btnNick.classList.add("hidden");
+        btnEnd.classList.add("hidden");
+        return;
+      }
+      const nick = getNickname() || "未命名";
+      meta.innerHTML = `协同中 · 房间 <strong>${collabRoomId}</strong> · 我是 <strong>${nick}</strong> · 链接 24 小时无操作将过期`;
+      btnCreate.classList.add("hidden");
+      btnCopy.classList.remove("hidden");
+      btnNick.classList.remove("hidden");
+      btnEnd.classList.remove("hidden");
+    }
+
+    function promptNickname(force) {
+      return new Promise(resolve => {
+        const existing = getNickname();
+        if (existing && !force) {
+          resolve(existing);
+          return;
+        }
+        const mask = $("nickModalMask");
+        const input = $("nickInput");
+        input.value = existing || "";
+        mask.classList.add("show");
+        nickResolver = (val) => {
+          mask.classList.remove("show");
+          nickResolver = null;
+          resolve(val);
+        };
+        setTimeout(() => input.focus(), 50);
+      });
+    }
+
+    function stopRoomListener() {
+      if (roomRef && roomListener) {
+        roomRef.off("value", roomListener);
+      }
+      roomRef = null;
+      roomListener = null;
+    }
+
+    function cartFromRemote(cartNode) {
+      const next = {};
+      const meta = {};
+      if (cartNode && typeof cartNode === "object") {
+        Object.entries(cartNode).forEach(([id, item]) => {
+          if (!item) return;
+          const qty = +item.qty || 0;
+          if (qty > 0) {
+            next[id] = qty;
+            meta[id] = { lastBy: item.lastBy || "" };
+          }
+        });
+      }
+      return { cart: next, meta };
+    }
+
+    function applyRemoteSnapshot(val) {
+      if (!val || !val.meta) return;
+      if (val.meta.status === "ended") {
+        collabActive = false;
+        collabRoomId = null;
+        stopRoomListener();
+        history.replaceState(null, "", location.pathname);
+        toolHint.textContent = "房间已结束，已回到单人模式";
+        updateCollabUI();
+        return;
+      }
+      if (val.meta.expiresAt && val.meta.expiresAt < now()) {
+        collabActive = false;
+        collabRoomId = null;
+        stopRoomListener();
+        history.replaceState(null, "", location.pathname);
+        toolHint.textContent = "房间已过期（24 小时无操作），请重新创建";
+        updateCollabUI();
+        return;
+      }
+      applyingRemote = true;
+      try {
+        const parsed = cartFromRemote(val.cart);
+        cart = parsed.cart;
+        cartMeta = parsed.meta;
+        if (typeof val.meta.people === "number" && val.meta.people >= 1) {
+          people = val.meta.people;
+          peopleNumEl.textContent = people;
+          budgetAmountEl.textContent = "¥" + people * 17;
+        }
+        const activeCat = document.querySelector(".tab.active")?.dataset.cat || "all";
+        renderMenu(activeCat);
+        updateCartUI();
+      } finally {
+        applyingRemote = false;
+      }
+    }
+
+    async function touchRoomMeta(extra) {
+      if (!collabActive || !fbDb) return;
+      const patch = Object.assign({
+        updatedAt: now(),
+        expiresAt: touchExpires()
+      }, extra || {});
+      await fbDb.ref(`rooms/${collabRoomId}/meta`).update(patch);
+    }
+
+    async function joinRoom(roomId, opts) {
+      opts = opts || {};
+      if (!ensureFirebase()) {
+        alert("请先配置 Firebase 才能使用多人点餐。\n\n1. 打开 Firebase 控制台创建项目并启用 Realtime Database\n2. 创建 Web 应用，复制配置\n3. 在控制台执行：\nlocalStorage.setItem('zixuan_firebase', JSON.stringify({apiKey,authDomain,databaseURL,projectId,appId}))\n4. 刷新页面；把同一配置写入 index.html 后部署，同伴才能使用");
+        return false;
+      }
+      const nick = await promptNickname(!!opts.forceNick);
+      if (!nick) {
+        toolHint.textContent = "需要昵称才能进入协同房间";
+        return false;
+      }
+      setNickname(nick);
+      const snap = await fbDb.ref(`rooms/${roomId}`).once("value");
+      const val = snap.val();
+      if (!val || !val.meta) {
+        alert("房间不存在或链接无效");
+        return false;
+      }
+      if (val.meta.status === "ended") {
+        alert("该房间已结束点餐");
+        return false;
+      }
+      if (val.meta.expiresAt && val.meta.expiresAt < now()) {
+        alert("该房间已过期，请重新创建房间");
+        return false;
+      }
+      const memberId = getMemberId();
+      await fbDb.ref(`rooms/${roomId}/members/${memberId}`).set({
+        name: nick,
+        joinedAt: val.members && val.members[memberId] && val.members[memberId].joinedAt || now(),
+        lastSeenAt: now()
+      });
+      await fbDb.ref(`rooms/${roomId}/meta`).update({
+        updatedAt: now(),
+        expiresAt: touchExpires()
+      });
+
+      stopRoomListener();
+      collabRoomId = roomId;
+      collabActive = true;
+      roomRef = fbDb.ref(`rooms/${roomId}`);
+      roomListener = roomRef.on("value", snapshot => {
+        applyRemoteSnapshot(snapshot.val());
+      });
+      history.replaceState(null, "", roomLink(roomId));
+      updateCollabUI();
+      toolHint.textContent = `已加入房间 ${roomId}，购物车将实时同步`;
+      return true;
+    }
+
+    async function createRoom() {
+      if (!ensureFirebase()) {
+        alert("请先配置 Firebase 才能创建房间。\n\n控制台配置示例：\nlocalStorage.setItem('zixuan_firebase', JSON.stringify({\n  apiKey: '...',\n  authDomain: '...',\n  databaseURL: 'https://xxx.firebaseio.com',\n  projectId: '...',\n  appId: '...'\n}));\nlocation.reload();\n\n部署时请把同一配置写入页面中的 FIREBASE_DEFAULT，并发布 Realtime Database 规则（见仓库 firebase-database.rules.json）。");
+        return;
+      }
+      const nick = await promptNickname(false);
+      if (!nick) return;
+      setNickname(nick);
+      const id = genRoomId();
+      const memberId = getMemberId();
+      const t = now();
+      // 创建时可带上当前本地已选，方便先点再开房
+      const cartNode = {};
+      Object.entries(cart).forEach(([dishId, qty]) => {
+        if (qty > 0) cartNode[dishId] = { qty, lastBy: nick, updatedAt: t };
+      });
+      await fbDb.ref(`rooms/${id}`).set({
+        meta: {
+          createdAt: t,
+          updatedAt: t,
+          expiresAt: touchExpires(),
+          people,
+          status: "active",
+          createdBy: nick
+        },
+        members: {
+          [memberId]: { name: nick, joinedAt: t, lastSeenAt: t }
+        },
+        cart: cartNode
+      });
+      await joinRoom(id, { forceNick: false });
+      try {
+        await navigator.clipboard.writeText(roomLink(id));
+        toolHint.textContent = `房间已创建，链接已复制，发给同伴即可一起点`;
+      } catch (_) {
+        toolHint.textContent = `房间已创建，请点「复制链接」发给同伴`;
+      }
+    }
+
+    async function endRoom() {
+      if (!collabActive || !fbDb) return;
+      if (!confirm("结束本次点餐后，房间链接将失效，所有人退出协同。确定吗？")) return;
+      await fbDb.ref(`rooms/${collabRoomId}/meta`).update({
+        status: "ended",
+        updatedAt: now()
+      });
+      stopRoomListener();
+      collabActive = false;
+      collabRoomId = null;
+      history.replaceState(null, "", location.pathname);
+      updateCollabUI();
+      toolHint.textContent = "已结束协同，可继续单人点餐";
+    }
+
+    async function collabChangeQty(dishId, delta) {
+      if (!collabActive || !fbDb) return false;
+      const nick = getNickname() || "食客";
+      const ref = fbDb.ref(`rooms/${collabRoomId}/cart/${dishId}`);
+      await ref.transaction(cur => {
+        const base = cur && typeof cur === "object" ? cur : { qty: 0 };
+        const qty = Math.max(0, (+base.qty || 0) + delta);
+        if (qty === 0) return null;
+        return { qty, lastBy: nick, updatedAt: now() };
+      });
+      await touchRoomMeta();
+      await fbDb.ref(`rooms/${collabRoomId}/members/${getMemberId()}/lastSeenAt`).set(now());
+      return true;
+    }
+
+    async function collabSetPeople(nextPeople) {
+      if (!collabActive || !fbDb) return false;
+      await touchRoomMeta({ people: nextPeople });
+      return true;
+    }
+
+    async function collabReplaceCart(nextCart) {
+      if (!collabActive || !fbDb) return false;
+      const nick = getNickname() || "食客";
+      const t = now();
+      const snap = await fbDb.ref(`rooms/${collabRoomId}/cart`).once("value");
+      const old = snap.val() || {};
+      const updates = {};
+      Object.keys(old).forEach(k => { updates[`rooms/${collabRoomId}/cart/${k}`] = null; });
+      Object.entries(nextCart).forEach(([id, qty]) => {
+        if (qty > 0) updates[`rooms/${collabRoomId}/cart/${id}`] = { qty, lastBy: nick, updatedAt: t };
+      });
+      updates[`rooms/${collabRoomId}/meta/updatedAt`] = t;
+      updates[`rooms/${collabRoomId}/meta/expiresAt`] = touchExpires();
+      await fbDb.ref().update(updates);
+      return true;
+    }
+
+    async function changeCartQty(dishId, delta) {
+      if (collabActive) {
+        try {
+          await collabChangeQty(dishId, delta);
+        } catch (e) {
+          console.error(e);
+          toolHint.textContent = "同步失败，请检查网络或 Firebase 配置";
+        }
+        return;
+      }
+      if (delta > 0) cart[dishId] = (cart[dishId] || 0) + delta;
+      else {
+        if (cart[dishId] > 0) cart[dishId] += delta;
+        if (!cart[dishId]) delete cart[dishId];
+      }
+      renderMenu(document.querySelector(".tab.active")?.dataset.cat || "all");
+      updateCartUI();
+    }
+
+    async function replaceCartLocalOrRemote(nextCart, confirmMsg) {
+      if (collabActive) {
+        if (confirmMsg && !confirm(confirmMsg)) return false;
+        try {
+          await collabReplaceCart(nextCart);
+        } catch (e) {
+          console.error(e);
+          toolHint.textContent = "批量同步失败，请重试";
+          return false;
+        }
+        return true;
+      }
+      cart = nextCart;
+      cartMeta = {};
+      return true;
+    }
+
+
     function matchTaste(dish) {
       if (activeTastes.size === 0) return true;
       const t = dish.tastes || [];
@@ -1126,11 +1644,14 @@
           ).join("");
           const div = document.createElement("div");
           div.className = "dish";
+          const by = (cartMeta[dish.id] && cartMeta[dish.id].lastBy) ? cartMeta[dish.id].lastBy : "";
+          const byHtml = by ? `<div class="dish-by">${by} 操作</div>` : "";
           div.innerHTML = `
             <div class="dish-info">
               <div class="dish-name">${dish.name}</div>
               <div class="dish-tags">${tags}</div>
               <div class="dish-price">¥${dish.price}<span>${unit}</span></div>
+              ${byHtml}
             </div>
             <div class="qty-control">
               <button class="qty-btn" data-id="${dish.id}" data-act="minus" ${qty===0?"disabled":""}>−</button>
@@ -1256,13 +1777,22 @@
         toolHint.textContent = "盲盒失败，请放宽口味过滤后再试";
         return;
       }
-      cart = {};
-      picked.forEach(d => { cart[d.id] = 1; });
-      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-      document.querySelector('.tab[data-cat="all"]').classList.add("active");
-      renderMenu("all");
-      updateCartUI();
-      toolHint.textContent = `盲盒开出 ${picked.length} 道菜，合计 ¥${sum}`;
+      const next = {};
+      picked.forEach(d => { next[d.id] = 1; });
+      (async () => {
+        const ok = await replaceCartLocalOrRemote(next, collabActive ? "盲盒将替换当前房间内所有人的购物车，确定继续？" : "");
+        if (!ok) return;
+        if (!collabActive) {
+          document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+          document.querySelector('.tab[data-cat="all"]').classList.add("active");
+          renderMenu("all");
+          updateCartUI();
+        } else {
+          document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+          document.querySelector('.tab[data-cat="all"]').classList.add("active");
+        }
+        toolHint.textContent = `盲盒开出 ${picked.length} 道菜，合计 ¥${sum}`;
+      })();
     }
 
     // ========== 按已选菜品一键补齐 ==========
@@ -1454,16 +1984,24 @@
       const hid = +btn.dataset.hid;
       const rec = loadHistory().find(h => h.id === hid);
       if (!rec) return;
-      cart = {};
-      rec.items.forEach(i => { cart[i.id] = i.qty; });
-      people = rec.people;
-      peopleNumEl.textContent = people;
-      budgetAmountEl.textContent = "¥" + people * 17;
-      renderMenu("all");
-      updateCartUI();
-      toolHint.textContent = `已复用 ${rec.time} 的点餐记录`;
-      historyPanel.classList.remove("show");
-      $("btnHistory").classList.remove("active");
+      (async () => {
+        const next = {};
+        rec.items.forEach(i => { next[i.id] = i.qty; });
+        const ok = await replaceCartLocalOrRemote(next, collabActive ? "复用历史将替换房间内所有人的购物车，确定？" : "");
+        if (!ok) return;
+        if (collabActive) {
+          try { await collabSetPeople(rec.people); } catch (_) {}
+        } else {
+          people = rec.people;
+          peopleNumEl.textContent = people;
+          budgetAmountEl.textContent = "¥" + people * 17;
+          renderMenu("all");
+          updateCartUI();
+        }
+        toolHint.textContent = `已复用 ${rec.time} 的点餐记录`;
+        historyPanel.classList.remove("show");
+        $("btnHistory").classList.remove("active");
+      })();
     });
 
     
@@ -1497,11 +2035,7 @@
     document.getElementById("budgetTip").addEventListener("click", e => {
       const t = e.target.closest("[data-add-id]");
       if (!t) return;
-      const id = +t.dataset.addId;
-      cart[id] = (cart[id] || 0) + 1;
-      const activeCat = document.querySelector(".tab.active")?.dataset.cat || "all";
-      renderMenu(activeCat);
-      updateCartUI();
+      changeCartQty(+t.dataset.addId, 1);
     });
 
     btnRecommend.addEventListener("click", () => {
@@ -1522,37 +2056,57 @@
         return;
       }
 
-      result.dishes.forEach(dish => { cart[dish.id] = 1; });
-      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
-      document.querySelector('.tab[data-cat="all"]').classList.add("active");
-      renderMenu("all");
-      updateCartUI();
+      (async () => {
+        if (collabActive && !confirm("一键补齐将向房间购物车追加菜品，所有人可见。确定继续？")) return;
+        const next = { ...cart };
+        result.dishes.forEach(dish => { next[dish.id] = 1; });
+        const ok = await replaceCartLocalOrRemote(next, "");
+        if (!ok) return;
+        if (!collabActive) {
+          document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+          document.querySelector('.tab[data-cat="all"]').classList.add("active");
+          renderMenu("all");
+          updateCartUI();
+        } else {
+          document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+          document.querySelector('.tab[data-cat="all"]').classList.add("active");
+        }
 
-      const diff = result.total - budget;
-      const budgetStatus = diff > 0 ? `上浮 ¥${diff}` : diff < 0 ? `剩余 ¥${-diff}` : "刚好预算";
-      const retained = result.current.count
-        ? `已保留 ${result.current.count} 道已选菜`
-        : "已从空菜单生成推荐";
-      recommendHintEl.textContent = `${retained}，本次补充 ${result.dishes.length} 道菜，合计 ¥${result.total}（预算 ¥${budget}，${budgetStatus}）；优先补充特色和家常小炒大菜`;
-      btnRecommend.textContent = "已补齐 ✓";
-      btnRecommend.classList.add("done");
-      setTimeout(() => {
-        btnRecommend.textContent = "一键补齐菜品";
-        btnRecommend.classList.remove("done");
-      }, 1800);
+        const diff = result.total - budget;
+        const budgetStatus = diff > 0 ? `上浮 ¥${diff}` : diff < 0 ? `剩余 ¥${-diff}` : "刚好预算";
+        const retained = result.current.count
+          ? `已保留 ${result.current.count} 道已选菜`
+          : "已从空菜单生成推荐";
+        recommendHintEl.textContent = `${retained}，本次补充 ${result.dishes.length} 道菜，合计 ¥${result.total}（预算 ¥${budget}，${budgetStatus}）；优先补充特色和家常小炒大菜`;
+        btnRecommend.textContent = "已补齐 ✓";
+        btnRecommend.classList.add("done");
+        setTimeout(() => {
+          btnRecommend.textContent = "一键补齐菜品";
+          btnRecommend.classList.remove("done");
+        }, 1800);
+      })();
     });
 
-    $("minusPeople").addEventListener("click", () => {
-      if (people > 1) {
-        people--;
-        peopleNumEl.textContent = people;
-        budgetAmountEl.textContent = "¥" + people * 17;
-        resetRecommendUI();
-        updateCartUI();
+    $("minusPeople").addEventListener("click", async () => {
+      if (people <= 1) return;
+      const next = people - 1;
+      if (collabActive) {
+        try { await collabSetPeople(next); } catch (e) { toolHint.textContent = "人数同步失败"; }
+        return;
       }
+      people = next;
+      peopleNumEl.textContent = people;
+      budgetAmountEl.textContent = "¥" + people * 17;
+      resetRecommendUI();
+      updateCartUI();
     });
-    $("plusPeople").addEventListener("click", () => {
-      people++;
+    $("plusPeople").addEventListener("click", async () => {
+      const next = people + 1;
+      if (collabActive) {
+        try { await collabSetPeople(next); } catch (e) { toolHint.textContent = "人数同步失败"; }
+        return;
+      }
+      people = next;
       peopleNumEl.textContent = people;
       budgetAmountEl.textContent = "¥" + people * 17;
       resetRecommendUI();
@@ -1568,10 +2122,8 @@
       const btn = e.target.closest(".qty-btn");
       if (!btn) return;
       const id = +btn.dataset.id;
-      if (btn.dataset.act === "plus") cart[id] = (cart[id] || 0) + 1;
-      else { if (cart[id] > 0) cart[id]--; if (!cart[id]) delete cart[id]; }
-      renderMenu(document.querySelector(".tab.active").dataset.cat);
-      updateCartUI();
+      const delta = btn.dataset.act === "plus" ? 1 : -1;
+      changeCartQty(id, delta);
     });
 
     function renderOrderModal() {
@@ -1581,8 +2133,9 @@
         if (qty <= 0) return;
         const d = menuData.find(x => x.id == id);
         const sub = d.price * qty; total += sub;
-        html += `<div class="order-item"><div class="order-item-main"><span>${d.name} ×${qty}</span><span>¥${sub}</span></div><button class="btn-remove-item" data-remove-id="${d.id}">移除</button></div>`;
-        lines.push(`${d.name} ×${qty}  ¥${sub}`);
+        const by = (cartMeta[id] && cartMeta[id].lastBy) ? `（${cartMeta[id].lastBy}）` : "";
+        html += `<div class="order-item"><div class="order-item-main"><span>${d.name} ×${qty}${by}</span><span>¥${sub}</span></div><button class="btn-remove-item" data-remove-id="${d.id}">移除</button></div>`;
+        lines.push(`${d.name} ×${qty}${by}  ¥${sub}`);
       });
       orderListEl.innerHTML = html || '<div class="empty-tip">还没有选择菜品</div>';
       modalTotalEl.textContent = "¥" + total;
@@ -1601,12 +2154,18 @@
       renderOrderModal();
       modalMask.classList.add("show");
     });
-    orderListEl.addEventListener("click", e => {
+    orderListEl.addEventListener("click", async e => {
       const btn = e.target.closest(".btn-remove-item");
       if (!btn) return;
-      delete cart[+btn.dataset.removeId];
-      renderMenu(document.querySelector(".tab.active").dataset.cat);
-      updateCartUI();
+      const id = +btn.dataset.removeId;
+      if (collabActive) {
+        const qty = cart[id] || 0;
+        if (qty > 0) await changeCartQty(id, -qty);
+      } else {
+        delete cart[id];
+        renderMenu(document.querySelector(".tab.active").dataset.cat);
+        updateCartUI();
+      }
       renderOrderModal();
     });
     $("modalClose").addEventListener("click", () => modalMask.classList.remove("show"));
@@ -1624,9 +2183,67 @@
       });
     });
 
+    // 协同 UI 事件
+    $("btnCollabCreate").addEventListener("click", () => {
+      if (!firebaseConfigured()) {
+        alert("【多人点餐 · Firebase 配置】\n\n1. Firebase 控制台新建项目\n2. 构建 → Realtime Database → 创建（测试模式可先用，再贴 rules）\n3. 项目设置 → 你的应用 → 网页应用，复制配置\n4. 本机调试可在控制台执行：\nlocalStorage.setItem('zixuan_firebase', JSON.stringify({apiKey,authDomain,databaseURL,projectId,appId})); location.reload();\n5. 正式环境：把配置写入页面 FIREBASE_DEFAULT 并部署\n6. 规则粘贴仓库中的 firebase-database.rules.json\n\n单人点餐无需配置，可直接使用。");
+        return;
+      }
+      createRoom();
+    });
+    $("btnCollabCopy").addEventListener("click", async () => {
+      if (!collabRoomId) return;
+      const link = roomLink(collabRoomId);
+      try {
+        await navigator.clipboard.writeText(link);
+        toolHint.textContent = "链接已复制";
+      } catch (_) {
+        prompt("复制此链接发给同伴：", link);
+      }
+    });
+    $("btnCollabNick").addEventListener("click", async () => {
+      const nick = await promptNickname(true);
+      if (!nick) return;
+      setNickname(nick);
+      if (collabActive && fbDb) {
+        await fbDb.ref(`rooms/${collabRoomId}/members/${getMemberId()}`).update({ name: nick, lastSeenAt: now() });
+      }
+      updateCollabUI();
+      toolHint.textContent = `昵称已更新为 ${nick}`;
+    });
+    $("btnCollabEnd").addEventListener("click", () => endRoom());
+    $("btnNickOk").addEventListener("click", () => {
+      const v = ($("nickInput").value || "").trim().slice(0, 12);
+      if (!v) {
+        $("nickInput").focus();
+        return;
+      }
+      if (nickResolver) nickResolver(v);
+    });
+    $("btnNickCancel").addEventListener("click", () => {
+      if (nickResolver) nickResolver(getNickname() || "");
+    });
+    $("nickInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") $("btnNickOk").click();
+    });
+
     renderMenu();
     updateCartUI();
     syncStickyOffsets();
+    updateCollabUI();
+
+    // URL 带 room 参数则自动进房
+    (async () => {
+      const rid = new URLSearchParams(location.search).get("room");
+      if (rid && /^[a-z0-9]{6,16}$/i.test(rid)) {
+        if (!firebaseConfigured()) {
+          toolHint.textContent = "收到协同链接，但本页尚未配置 Firebase，无法进房";
+          updateCollabUI();
+          return;
+        }
+        await joinRoom(rid.toLowerCase());
+      }
+    })();
   </script>
 </body>
 </html>
