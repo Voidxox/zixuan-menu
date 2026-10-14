@@ -35,7 +35,7 @@
       { id: 127, name: "烧三宝", price: 58, cat: "tese", tastes: ["spicy","meat"], image: "./src/assets/menu/dish-02.jpg" },
       { id: 128, name: "鱼香茄饼", price: 38, cat: "tese", tastes: ["spicy","veg"], image: "./src/assets/menu/dish-03.jpg" },
       { id: 129, name: "泡脚牛蛙", price: 68, cat: "tese", tastes: ["spicy","meat"], image: "./src/assets/menu/dish-04.jpg" },
-      { id: 130, name: "卤煎兔", price: 42, cat: "tese", tastes: ["spicy","meat"], image: "./src/assets/menu/dish-05.jpg" },
+      { id: 130, name: "小煎兔", price: 42, cat: "tese", tastes: ["spicy","meat"], image: "./src/assets/menu/dish-05.jpg" },
       { id: 131, name: "过水鱼", price: 42, cat: "tese", tastes: ["spicy","meat"], image: "./src/assets/menu/dish-06.jpg" },
       { id: 132, name: "糖醋脆皮鱼", price: 58, cat: "tese", tastes: ["mild","meat"], image: "./src/assets/menu/dish-07.jpg" },
       { id: 133, name: "金沙玉米虾", price: 58, cat: "tese", tastes: ["mild","meat"], image: "./src/assets/menu/dish-08.jpg" },
