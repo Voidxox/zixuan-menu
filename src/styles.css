@@ -694,6 +694,15 @@ body {
 }
 .dish:last-child { border-bottom: none; }
 .dish.hidden-by-filter { display: none; }
+.dish-image {
+  width: 72px;
+  height: 72px;
+  flex: 0 0 72px;
+  object-fit: cover;
+  border: 1px solid var(--gold-line);
+  border-radius: 2px;
+  background: #eadbc5;
+}
 .dish-info { flex: 1; min-width: 0; padding-right: 8px; }
 .dish-name {
   overflow: hidden;
@@ -732,6 +741,7 @@ body {
   font-family: "Noto Sans SC", sans-serif;
   font-weight: 400;
 }
+.dish-price.market { color: var(--muted); }
 
 .qty-control { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 .qty-btn {

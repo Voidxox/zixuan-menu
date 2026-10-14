@@ -54,6 +54,7 @@ import { catNames, menuData, PY } from "./data/menu-data.js";
     const priceResultMeta = $("priceResultMeta"), priceResults = $("priceResults");
 
     function getBudget() { return people * 17; }
+    function hasNumericPrice(dish) { return Number.isFinite(dish?.price); }
     function getDefaultRecommendationHint() {
       return "保留已选菜品，优先补充特色和家常小炒大菜，尽量贴近预算";
     }
@@ -80,7 +81,7 @@ import { catNames, menuData, PY } from "./data/menu-data.js";
       const minPrice = Math.max(0, targetPrice - PRICE_BROWSE_TOLERANCE);
       const maxPrice = targetPrice + PRICE_BROWSE_TOLERANCE;
       const matches = menuData
-        .filter(dish => dish.price > 0 && dish.price >= minPrice && dish.price <= maxPrice)
+        .filter(dish => hasNumericPrice(dish) && dish.price > 0 && dish.price >= minPrice && dish.price <= maxPrice)
         .sort((a, b) => Math.abs(a.price - targetPrice) - Math.abs(b.price - targetPrice)
           || a.price - b.price || a.id - b.id);
 
@@ -506,6 +507,12 @@ import { catNames, menuData, PY } from "./data/menu-data.js";
     }
 
     async function changeCartQty(dishId, delta) {
+      const dish = menuData.find(item => item.id === dishId);
+      // 时价菜先展示给顾客，价格未确认前不进入在线点餐和预算计算。
+      if (delta > 0 && dish && !hasNumericPrice(dish)) {
+        toolHint.textContent = `${dish.name}为时价菜品，请现场确认价格后再加入点菜单`;
+        return;
+      }
       if (collabActive) {
         try {
           await collabChangeQty(dishId, delta);
@@ -587,6 +594,8 @@ import { catNames, menuData, PY } from "./data/menu-data.js";
         dishes.forEach(dish => {
           const qty = cart[dish.id] || 0;
           const unit = dish.unit ? `/${dish.unit}` : "";
+          const priceText = hasNumericPrice(dish) ? `¥${dish.price}` : (dish.priceLabel || "时价");
+          const imageHtml = dish.image ? `<img class="dish-image" src="${dish.image}" alt="${dish.name}" loading="lazy">` : "";
           const tags = (dish.tastes || []).filter(t => t === "spicy" || t === "mild").map(t =>
             `<span class="dish-tag ${t === "spicy" ? "spicy" : ""}">${t === "spicy" ? "辣" : "清淡"}</span>`
           ).join("");
@@ -595,16 +604,17 @@ import { catNames, menuData, PY } from "./data/menu-data.js";
           const by = (cartMeta[dish.id] && cartMeta[dish.id].lastBy) ? cartMeta[dish.id].lastBy : "";
           const byHtml = by ? `<div class="dish-by">${by} 操作</div>` : "";
           div.innerHTML = `
+            ${imageHtml}
             <div class="dish-info">
               <div class="dish-name">${dish.name}</div>
               <div class="dish-tags">${tags}</div>
-              <div class="dish-price">¥${dish.price}<span>${unit}</span></div>
+              <div class="dish-price${hasNumericPrice(dish) ? "" : " market"}">${priceText}<span>${unit}</span></div>
               ${byHtml}
             </div>
             <div class="qty-control">
               <button class="qty-btn" data-id="${dish.id}" data-act="minus" ${qty===0?"disabled":""}>−</button>
               <span class="qty">${qty}</span>
-              <button class="qty-btn plus" data-id="${dish.id}" data-act="plus">+</button>
+              <button class="qty-btn plus" data-id="${dish.id}" data-act="plus" ${hasNumericPrice(dish) ? "" : "disabled"} aria-label="${hasNumericPrice(dish) ? `加入${dish.name}` : `${dish.name}为时价，暂不可在线计价`}">+</button>
             </div>`;
           list.appendChild(div);
         });

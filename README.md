@@ -18,6 +18,7 @@ python -m http.server 8000
 | 需求 | 修改位置 |
 | --- | --- |
 | 新增、下架或调整菜品价格 | `src/data/menu-data.js` 中的 `menuData` |
+| 调整菜品图片 | `src/assets/menu/` 中的图片文件及 `menuData` 的 `image` 字段 |
 | 调整菜品分类、口味标签或拼音首字母 | `src/data/menu-data.js` |
 | 调整颜色、布局、移动端适配 | `src/styles.css` |
 | 修改搜索、购物车、预算、推荐、历史记录 | `src/app.js` |
@@ -33,6 +34,8 @@ index.html                 页面结构和外部 SDK 引用
 src/
 ├── app.js                 页面状态、交互和 Firebase 协同逻辑
 ├── styles.css             全部页面样式
+├── assets/
+│   └── menu/              菜品卡片图片
 └── data/
     └── menu-data.js       菜品数据、分类名称和拼音映射
 firebase.json              Firebase 部署配置
@@ -49,7 +52,7 @@ firebase-database.rules.json
 { id: 125, name: "新菜品", price: 28, cat: "xiaochao", tastes: ["mild", "veg"] }
 ```
 
-可选字段 `unit` 用于显示“/瓶”“/只”等单位。`id` 必须唯一，`cat` 使用现有分类键：`liangcai`、`xiaochao`、`tese`、`tang`、`jiushui`。
+可选字段 `unit` 用于显示“/瓶”“/只”等单位，`image` 用于绑定 `src/assets/menu/` 下的菜品图片。价格未知时使用 `price: null, priceLabel: "时价"`，这类菜品会展示但暂不计入预算，也不能直接加入在线点菜单。`id` 必须唯一，`cat` 使用现有分类键：`liangcai`、`xiaochao`、`tese`、`tang`、`jiushui`。
 
 ## 发布
 
