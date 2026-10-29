@@ -45,6 +45,11 @@
       { id: 137, name: "青椒肥肠鸡", price: 58, cat: "tese", tastes: ["spicy","meat"], image: "./src/assets/menu/dish-12.jpg" },
       { id: 138, name: "青椒脆猪舌", price: 38, cat: "tese", tastes: ["spicy","meat"], image: "./src/assets/menu/dish-13.jpg" },
       { id: 139, name: "香炒牛肉", price: 46, cat: "tese", tastes: ["spicy","meat"], image: "./src/assets/menu/dish-14.jpg" },
+      { id: 140, name: "鸡杂烧鸡血", price: 32, cat: "tese", tastes: ["meat"] },
+      { id: 141, name: "番茄烩滑肉", price: 42, cat: "tese", tastes: ["meat"] },
+      { id: 142, name: "水煮滑肉", price: 42, cat: "tese", tastes: ["meat"] },
+      { id: 144, name: "酥肉老豆腐", price: 38, cat: "tese", tastes: ["meat"] },
+      { id: 145, name: "鲜椒仔姜兔", price: 48, cat: "tese", tastes: ["meat"] },
       { id: 31, name: "椒盐小酥肉", price: 38, cat: "tese", tastes: ["mild","meat"] },
       { id: 32, name: "水煮肉片", price: 38, cat: "tese", tastes: ["spicy","meat"] },
       { id: 33, name: "锅巴肉片", price: 39, cat: "tese", tastes: ["mild","meat"] },
@@ -62,6 +67,7 @@
       { id: 45, name: "宫保鸡丁", price: 23, cat: "xiaochao", tastes: ["spicy","meat"] },
       { id: 46, name: "青椒肉丝", price: 23, cat: "xiaochao", tastes: ["mild","meat"] },
       { id: 47, name: "家常豆腐", price: 25, cat: "xiaochao", tastes: ["mild","veg"] },
+      { id: 143, name: "千叶豆腐", price: 18, cat: "xiaochao", tastes: ["veg"] },
       { id: 48, name: "笋子肉片", price: 28, cat: "xiaochao", tastes: ["mild","meat"] },
       { id: 49, name: "农家小炒肉", price: 28, cat: "xiaochao", tastes: ["spicy","meat"] },
       { id: 50, name: "爆炒猪肝", price: 25, cat: "xiaochao", tastes: ["mild","meat"] },
@@ -143,6 +149,8 @@
 
     // 常用汉字 -> 拼音首字母（覆盖本菜单）
     const PY = {"丁":"d","丝":"s","乌":"w","乐":"l","乡":"x","二":"e","五":"w","仁":"r","仔":"z","保":"b","兔":"t","农":"n","凉":"l","凤":"f","劲":"j","勇":"y","北":"b","卜":"b","卤":"l","冒":"m","口":"k","可":"k","合":"h","吉":"j","味":"w","咸":"x","唯":"w","嘴":"z","回":"h","圆":"y","土":"t","外":"w","大":"d","头":"t","奶":"n","姜":"j","婆":"p","子":"z","宫":"g","家":"j","小":"x","尖":"j","尾":"w","山":"s","川":"c","巴":"b","常":"c","干":"g","庆":"q","怡":"y","拌":"b","招":"z","拱":"g","排":"p","时":"s","旺":"w","星":"x","木":"m","朵":"d","杂":"z","村":"c","杞":"q","条":"t","板":"b","枸":"g","柳":"l","梅":"m","椒":"j","榨":"z","歪":"w","毛":"m","水":"s","汁":"z","汉":"h","江":"j","汤":"t","沸":"f","油":"y","泉":"q","泡":"p","泥":"n","渣":"z","源":"y","溜":"l","滋":"z","火":"h","灼":"z","炒":"c","烟":"y","烤":"k","烧":"s","煎":"j","煮":"z","煸":"b","爆":"b","爽":"s","片":"p","牌":"p","牛":"n","猪":"z","玉":"y","王":"w","瓜":"g","瓣":"b","生":"s","番":"f","白":"b","皮":"p","盐":"y","盔":"k","矿":"k","碧":"b","笋":"s","米":"m","粉":"f","粑":"b","粮":"l","糍":"c","糖":"t","紫":"z","红":"h","纯":"c","罐":"g","老":"l","耳":"e","肉":"r","肚":"d","肝":"g","肠":"c","肥":"f","腊":"l","腐":"f","腰":"y","腾":"t","花":"h","芹":"q","茄":"j","药":"y","莲":"l","菌":"j","菜":"c","萝":"l","葱":"c","蒜":"s","蔬":"s","虎":"h","虾":"x","蛋":"d","血":"x","豆":"d","辣":"l","边":"b","过":"g","郎":"l","酒":"j","酥":"s","酱":"j","酸":"s","重":"z","野":"y","钵":"b","铁":"t","锅":"g","闯":"c","雪":"x","青":"q","须":"x","饺":"j","香":"x","驴":"l","骨":"g","鱼":"y","鱿":"y","鲜":"x","鸡":"j","鸭":"y","黄":"h","黑":"h","肘":"z","霸":"b","三":"s","宝":"b","饼":"b","脚":"j","蛙":"w","醋":"c","脆":"c","鲳":"c","鳝":"s","舌":"s"};
+
+    Object.assign(PY, { "烩": "h", "滑": "h", "千": "q", "叶": "y" });
 
     const catNames = { liangcai: "精品凉菜", xiaochao: "家常小炒", tese: "特色推荐", tang: "汤类", jiushui: "酒水饮料" };
 
