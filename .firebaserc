@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "ziweixuan"
+    "default": "ziweixuan",
+    "ratings": "zixuan-menu"
   }
 }

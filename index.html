@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <title>滋味轩 · 点餐</title>
-  <link rel="stylesheet" href="./src/styles.css" />
+  <link rel="stylesheet" href="./src/styles.css?v=20261016-ratings" />
 </head>
 <body>
   <div class="header">
@@ -171,8 +171,42 @@
     </div>
   </div>
 
+  <dialog id="ratingDialog" class="rating-dialog" aria-labelledby="ratingTitle">
+    <div class="rating-heading">
+      <div><div class="rating-eyebrow">食客口碑</div><h2 id="ratingTitle"></h2><p id="ratingDishMeta"></p></div>
+      <button type="button" id="ratingClose" class="rating-close" aria-label="关闭菜品口碑">×</button>
+    </div>
+    <p id="ratingStatus" class="rating-status" role="status"></p>
+    <button type="button" id="ratingRetry" class="rating-secondary" hidden>重新加载口碑</button>
+    <div id="ratingContent" hidden>
+      <div class="rating-overview">
+        <div><div id="ratingAverage" class="rating-average"></div><p id="ratingCount"></p></div>
+        <div id="ratingDistribution" class="rating-distribution" aria-label="评分分布"></div>
+      </div>
+      <div id="ratingMine" class="rating-mine" hidden></div>
+      <button type="button" id="ratingEdit" class="rating-primary">我来评分</button>
+      <p class="rating-note">全站共享 · 每个浏览器每道菜保留一份评价，可修改</p>
+      <h3 class="rating-reviews-heading">食客怎么说<span>最近更新</span></h3>
+      <div id="ratingReviews"></div>
+      <button type="button" id="ratingMore" class="rating-secondary" hidden>查看更多评价</button>
+    </div>
+    <form id="ratingForm" hidden>
+      <h3 id="ratingFormTitle">给这道菜打个分</h3>
+      <fieldset class="rating-fieldset"><legend>你的评分</legend><div id="ratingStars" class="rating-stars"></div></fieldset>
+      <p id="ratingCaption" class="rating-caption" aria-live="polite"></p>
+      <label class="rating-label" for="ratingNickname">你的昵称<span>必填 · 最多 12 字</span></label>
+      <input id="ratingNickname" required maxlength="12" autocomplete="nickname" placeholder="例如：小王" />
+      <label class="rating-label" for="ratingComment">说说味道<span>选填 · 最多 80 字</span></label>
+      <textarea id="ratingComment" maxlength="80" rows="3" placeholder="口味、分量，或是你想推荐的理由…"></textarea>
+      <p class="rating-note">昵称和短评会公开展示。清除浏览器数据或换设备后，会视为新身份。</p>
+      <p id="ratingFormError" class="rating-error" role="alert"></p>
+      <div class="rating-form-actions"><button type="button" id="ratingCancel" class="rating-secondary">取消</button><button type="submit" id="ratingSubmit" class="rating-primary">发布评价</button></div>
+    </form>
+  </dialog>
+
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
-  <script type="module" src="./src/app.js"></script>
+  <script type="module" src="./src/app.js?v=20261016-ratings"></script>
 </body>
 </html>

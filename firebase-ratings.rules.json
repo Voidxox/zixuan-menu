@@ -1,0 +1,30 @@
+{
+  "rules": {
+    "dishReviews": {
+      ".read": true,
+      "$dishId": {
+        ".indexOn": ["updatedAt"],
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid && $dishId.matches(/^[1-9][0-9]{0,5}$/)",
+          ".validate": "newData.hasChildren(['nickname', 'stars', 'comment', 'createdAt', 'updatedAt'])",
+          "nickname": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 12 && newData.val().matches(/.*\\S.*/)"
+          },
+          "stars": {
+            ".validate": "newData.isNumber() && (newData.val() === 1 || newData.val() === 2 || newData.val() === 3 || newData.val() === 4 || newData.val() === 5)"
+          },
+          "comment": {
+            ".validate": "newData.isString() && newData.val().length <= 80"
+          },
+          "createdAt": {
+            ".validate": "newData.isNumber() && ((!data.exists() && newData.val() === now) || (data.exists() && newData.val() === data.val()))"
+          },
+          "updatedAt": {
+            ".validate": "newData.isNumber() && newData.val() === now"
+          },
+          "$other": { ".validate": false }
+        }
+      }
+    }
+  }
+}

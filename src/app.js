@@ -1,4 +1,6 @@
 import { catNames, menuData, PY } from "./data/menu-data.js";
+import { initDishRatings } from "./dish-ratings.js?v=20261016-ratings";
+import { ratingsFirebaseConfig } from "./data/ratings-config.js?v=20261016-ratings";
 
     function getInitials(name) {
       let s = "";
@@ -103,6 +105,7 @@ import { catNames, menuData, PY } from "./data/menu-data.js";
           <div class="price-result-main">
             <div class="price-result-name">${dish.name}</div>
             <div class="price-result-category">${catNames[dish.cat] || "其他"}</div>
+            ${dishRatings.buttonHtml(dish)}
           </div>
           <div class="price-result-side">
             <div class="price-result-price">
@@ -174,7 +177,7 @@ import { catNames, menuData, PY } from "./data/menu-data.js";
         return false;
       }
       try {
-        if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+        if (!firebase.apps.some(app => app.name === "[DEFAULT]")) firebase.initializeApp(FIREBASE_CONFIG);
         fbDb = firebase.database();
         return true;
       } catch (e) {
@@ -183,6 +186,20 @@ import { catNames, menuData, PY } from "./data/menu-data.js";
         return false;
       }
     }
+    const dishRatings = initDishRatings({
+      menuData,
+      getDatabase: () => {
+        if (typeof firebase === "undefined") return null;
+        // 评分使用独立项目和命名应用，多人点餐仍使用原来的默认应用。
+        const app = firebase.apps.find(item => item.name === "dish-ratings")
+          || firebase.initializeApp(ratingsFirebaseConfig, "dish-ratings");
+        return app.database();
+      },
+      getNickname: () => localStorage.getItem("zixuan_rating_nickname") || getNickname(),
+      // 评分昵称单独保存，避免修改多人房间中展示的点餐昵称。
+      setNickname: name => localStorage.setItem("zixuan_rating_nickname", name)
+    });
+
     function getMemberId() {
       let id = localStorage.getItem(MEMBER_KEY);
       if (!id) {
@@ -609,6 +626,7 @@ import { catNames, menuData, PY } from "./data/menu-data.js";
               <div class="dish-name">${dish.name}</div>
               <div class="dish-tags">${tags}</div>
               <div class="dish-price${hasNumericPrice(dish) ? "" : " market"}">${priceText}<span>${unit}</span></div>
+              ${dishRatings.buttonHtml(dish)}
               ${byHtml}
             </div>
             <div class="qty-control">
@@ -1228,6 +1246,8 @@ $("btnCollabCopy").addEventListener("click", async () => {
     updateCartUI();
     syncStickyOffsets();
     updateCollabUI();
+
+    dishRatings.start();
 
     // URL 带 room 参数则自动进房
     (async () => {

@@ -1,0 +1,6 @@
+{
+  "database": {
+    "instance": "zixuan-menu-default-rtdb",
+    "rules": "firebase-ratings.rules.json"
+  }
+}

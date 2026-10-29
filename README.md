@@ -23,6 +23,7 @@ python -m http.server 8000
 | 调整颜色、布局、移动端适配 | `src/styles.css` |
 | 修改搜索、购物车、预算、推荐、历史记录 | `src/app.js` |
 | 修改多人房间、昵称、实时同步 | `src/app.js` 中的 Firebase 协同区域 |
+| 修改菜品口碑、评分与短评 | `src/dish-ratings.js`、`index.html` 中的评分面板、`src/styles.css` |
 | 修改按价格浏览的上下浮动范围 | `src/app.js` 中的 `PRICE_BROWSE_TOLERANCE` |
 | 修改页面结构或新增 DOM 容器 | `index.html` |
 | 修改 Firebase 部署目标或数据库规则 | `.firebaserc`、`firebase.json`、`firebase-database.rules.json` |
@@ -55,6 +56,18 @@ firebase-database.rules.json
 可选字段 `unit` 用于显示“/瓶”“/只”等单位，`image` 用于绑定 `src/assets/menu/` 下的菜品图片。价格未知时使用 `price: null, priceLabel: "时价"`，这类菜品会展示但暂不计入预算，也不能直接加入在线点菜单。`id` 必须唯一，`cat` 使用现有分类键：`liangcai`、`xiaochao`、`tese`、`tang`、`jiushui`。
 
 ## 发布
+
+### 菜品口碑
+
+菜品口碑独立使用 Firebase 项目 `zixuan-menu`，Web 配置位于 `src/data/ratings-config.js`，通过名为 `dish-ratings` 的 Firebase 应用连接；现有多人点餐仍使用默认应用与 `ziweixuan` 项目配置。口碑保存在 `dishReviews/{dishId}/{uid}`，全站共享，独立于点餐房间。首次使用评分时创建持久化匿名身份，无需注册；昵称必填（1～12 字），短评选填（最多 80 字）。同一浏览器对同一道菜覆盖更新，人数不会因改分增加。清除站点数据、无痕或换设备会视为新身份。
+
+1～5 星对应 2、4、6、8、10 分；综合分取有效评分的平均数，保留一位小数。没有评价时显示“暂无评分”。按菜品 ID 保存，因此改菜名不会清空口碑。正式数据从空口碑开始，设计原型的数据不会导入。
+
+部署前需开启 `zixuan-menu` 项目的 Authentication → 匿名登录，并发布 `firebase-ratings.rules.json` 中的口碑规则：公开读取、仅本人写入、校验昵称/星级/短评和服务端时间。不要开放 `dishReviews` 的上层写权限。评分规则通过 `firebase deploy --only database --project zixuan-menu --config firebase-ratings.json` 单独部署；`firebase.json` 与 `firebase-database.rules.json` 仍仅用于原有多人点餐。
+
+验证评分计算：`node --test tests/dish-ratings.test.mjs`。浏览器验收需确认首次评分增加 1 人、改分人数不变、刷新回填本人评价、不同浏览器能查看相同口碑，以及搜索/价格浏览/购物车不受影响。
+
+### 静态页面
 
 这是 GitHub Pages 兼容的无构建项目。修改后提交并推送 `main` 分支即可：
 
