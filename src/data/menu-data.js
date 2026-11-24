@@ -67,7 +67,7 @@
       { id: 45, name: "宫保鸡丁", price: 23, cat: "xiaochao", tastes: ["spicy","meat"] },
       { id: 46, name: "青椒肉丝", price: 23, cat: "xiaochao", tastes: ["mild","meat"] },
       { id: 47, name: "家常豆腐", price: 25, cat: "xiaochao", tastes: ["mild","veg"] },
-      { id: 143, name: "千叶豆腐", price: 18, cat: "xiaochao", tastes: ["veg"] },
+      { id: 143, name: "干锅千叶豆腐", price: 22, cat: "xiaochao", tastes: ["veg"] },
       { id: 48, name: "笋子肉片", price: 28, cat: "xiaochao", tastes: ["mild","meat"] },
       { id: 49, name: "农家小炒肉", price: 28, cat: "xiaochao", tastes: ["spicy","meat"] },
       { id: 50, name: "爆炒猪肝", price: 25, cat: "xiaochao", tastes: ["mild","meat"] },
